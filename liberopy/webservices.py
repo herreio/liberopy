@@ -33,18 +33,25 @@ class WebServices:
             return self.LibraryAPI.titledetails(rsn)
         print("You have to login first!")
 
-    @staticmethod
-    def store_xml(xmlstr, path):
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(xmlstr)
 
-    @staticmethod
-    def store_xml_pretty(xmlstr, path):
-        parser = etree.XMLParser(remove_blank_text=True)
-        etree.ElementTree(etree.fromstring(
-                xmlstr.encode("utf-8"), parser)).write(
-                    path, xml_declaration=True,
-                    encoding="UTF-8", pretty_print=True)
+class ServiceResponse:
+
+    def __init__(self, xmlstr):
+        self.xmlstr = xmlstr
+        self.parser = etree.XMLParser(remove_blank_text=True)
+        self.root = etree.fromstring(xmlstr.encode("utf-8"), self.parser)
+
+    def tree(self):
+        return etree.ElementTree(self.root)
+
+    def store(self, path):
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(self.xmlstr)
+
+    def store_pretty(self, path):
+        xml_tree = self.tree()
+        xml_tree.write(path, xml_declaration=True,
+                       encoding="UTF-8", pretty_print=True)
 
 
 class ServicePackage:
@@ -72,7 +79,7 @@ class ServicePackage:
     def wsdl(self):
         response = self.get_request(self.url_wsdl())
         if response:
-            return response.text
+            return ServiceResponse(response.text)
 
     def method_path(self, method):
         return self.set_param(self.path, "soap_method", method)
@@ -98,7 +105,7 @@ class LibraryAPI(ServicePackage):
         url = self.url_titledetails(rsn)
         response = self.get_request(url)
         if response:
-            return response.text
+            return ServiceResponse(response.text)
 
     def url_titledetails(self, rsn):
         url = self.method_path("GetTitleDetails")
@@ -119,7 +126,7 @@ class CatalogueSearcher(ServicePackage):
         url = self.url_newitems()
         response = self.get_request(url)
         if response:
-            return response.text
+            return ServiceResponse(response.text)
 
     def url_newitems(self):
         url = self.method_path("Catalogue")
