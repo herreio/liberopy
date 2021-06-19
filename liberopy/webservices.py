@@ -57,7 +57,7 @@ class ServiceResponse:
             self.root = None
 
     def tree(self):
-        if self.error is not None:
+        if self.parser_error is None:
             return etree.ElementTree(self.root)
 
     def store(self, path):
