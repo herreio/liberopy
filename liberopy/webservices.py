@@ -23,6 +23,16 @@ class WebServices:
             self.CatalogueSearcher = CatalogueSearcher(self.base, self.token)
             self.LibraryAPI = LibraryAPI(self.base, self.token)
 
+    def logout(self):
+        if self.token:
+            self.token = None
+            self.Authenticate.logout()
+            self.Authenticate = None
+            self.CatalogueSearcher = None
+            self.LibraryAPI = None
+            return
+        print("You are not logged in!")
+
     def newitems(self):
         if self.token:
             return self.CatalogueSearcher.newitems()
