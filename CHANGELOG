@@ -1,3 +1,9 @@
+2021-06-19
+
+- create method WebServices.logout
+- unregister Authenticate.logout in method call
+- handle XMLSyntaxError in ServiceResponse
+
 2021-06-18
 
 - new class ServiceResponse

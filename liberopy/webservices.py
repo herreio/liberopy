@@ -23,6 +23,16 @@ class WebServices:
             self.CatalogueSearcher = CatalogueSearcher(self.base, self.token)
             self.LibraryAPI = LibraryAPI(self.base, self.token)
 
+    def logout(self):
+        if self.token:
+            self.token = None
+            self.Authenticate.logout()
+            self.Authenticate = None
+            self.CatalogueSearcher = None
+            self.LibraryAPI = None
+            return
+        print("You are not logged in!")
+
     def newitems(self):
         if self.token:
             return self.CatalogueSearcher.newitems()
@@ -39,10 +49,16 @@ class ServiceResponse:
     def __init__(self, xmlstr):
         self.xmlstr = xmlstr
         self.parser = etree.XMLParser(remove_blank_text=True)
-        self.root = etree.fromstring(xmlstr.encode("utf-8"), self.parser)
+        self.parser_error = None
+        try:
+            self.root = etree.fromstring(xmlstr.encode("utf-8"), self.parser)
+        except etree.XMLSyntaxError as err:
+            self.parser_error = str(err)
+            self.root = None
 
     def tree(self):
-        return etree.ElementTree(self.root)
+        if self.error is not None:
+            return etree.ElementTree(self.root)
 
     def store(self, path):
         with open(path, "w", encoding="utf-8") as f:
@@ -50,8 +66,9 @@ class ServiceResponse:
 
     def store_pretty(self, path):
         xml_tree = self.tree()
-        xml_tree.write(path, xml_declaration=True,
-                       encoding="UTF-8", pretty_print=True)
+        if xml_tree is not None:
+            xml_tree.write(path, xml_declaration=True,
+                           encoding="UTF-8", pretty_print=True)
 
 
 class ServicePackage:
@@ -156,6 +173,7 @@ class Authenticate(ServicePackage):
         url = self.url_logout(self.token)
         response = self.get_request(url)
         if response:
+            atexit.unregister(self.logout)
             print("Logout successful!")
 
     def url_login(self, user, password):
