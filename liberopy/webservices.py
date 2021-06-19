@@ -163,6 +163,7 @@ class Authenticate(ServicePackage):
         url = self.url_logout(self.token)
         response = self.get_request(url)
         if response:
+            atexit.unregister(self.logout)
             print("Logout successful!")
 
     def url_login(self, user, password):
