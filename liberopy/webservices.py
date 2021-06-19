@@ -39,10 +39,16 @@ class ServiceResponse:
     def __init__(self, xmlstr):
         self.xmlstr = xmlstr
         self.parser = etree.XMLParser(remove_blank_text=True)
-        self.root = etree.fromstring(xmlstr.encode("utf-8"), self.parser)
+        self.parser_error = None
+        try:
+            self.root = etree.fromstring(xmlstr.encode("utf-8"), self.parser)
+        except etree.XMLSyntaxError as err:
+            self.parser_error = str(err)
+            self.root = None
 
     def tree(self):
-        return etree.ElementTree(self.root)
+        if self.error is not None:
+            return etree.ElementTree(self.root)
 
     def store(self, path):
         with open(path, "w", encoding="utf-8") as f:
@@ -50,8 +56,9 @@ class ServiceResponse:
 
     def store_pretty(self, path):
         xml_tree = self.tree()
-        xml_tree.write(path, xml_declaration=True,
-                       encoding="UTF-8", pretty_print=True)
+        if xml_tree is not None:
+            xml_tree.write(path, xml_declaration=True,
+                           encoding="UTF-8", pretty_print=True)
 
 
 class ServicePackage:
