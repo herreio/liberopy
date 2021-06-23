@@ -1,5 +1,6 @@
 2021-06-21
 
+- create method ServicePackage.soap_request
 - create method LibraryAPI.itemdetails
 - create method WebServices.itemdetails
 

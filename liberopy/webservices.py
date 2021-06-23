@@ -91,6 +91,11 @@ class ServicePackage:
             return None
         return response
 
+    def soap_request(self, url):
+        response = self.get_request(url)
+        if response:
+            return ServiceResponse(response.text)
+
     @staticmethod
     def set_param(url, name, value):
         return "{0}?{1}={2}".format(url, name, value)
@@ -125,15 +130,11 @@ class LibraryAPI(ServicePackage):
 
     def titledetails(self, rsn):
         url = self.url_titledetails(rsn)
-        response = self.get_request(url)
-        if response:
-            return ServiceResponse(response.text)
+        return self.soap_request(url)
 
     def itemdetails(self, barcode):
         url = self.url_itemdetails(barcode)
-        response = self.get_request(url)
-        if response:
-            return ServiceResponse(response.text)
+        return self.soap_request(url)
 
     def url_itemdetails(self, barcode):
         url = self.method_path("GetItemDetails")
@@ -160,9 +161,7 @@ class CatalogueSearcher(ServicePackage):
 
     def newitems(self):
         url = self.url_newitems()
-        response = self.get_request(url)
-        if response:
-            return ServiceResponse(response.text)
+        return self.soap_request(url)
 
     def url_newitems(self):
         url = self.method_path("Catalogue")
