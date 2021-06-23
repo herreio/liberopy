@@ -1,3 +1,8 @@
+2021-06-21
+
+- create method LibraryAPI.itemdetails
+- create method WebServices.itemdetails
+
 2021-06-19
 
 - create method WebServices.logout

@@ -38,6 +38,11 @@ class WebServices:
             return self.CatalogueSearcher.newitems()
         print("You have to login first!")
 
+    def itemdetails(self, barcode):
+        if self.token:
+            return self.LibraryAPI.itemdetails(barcode)
+        print("You have to login first!")
+
     def titledetails(self, rsn):
         if self.token:
             return self.LibraryAPI.titledetails(rsn)
@@ -124,6 +129,17 @@ class LibraryAPI(ServicePackage):
         if response:
             return ServiceResponse(response.text)
 
+    def itemdetails(self, barcode):
+        url = self.url_itemdetails(barcode)
+        response = self.get_request(url)
+        if response:
+            return ServiceResponse(response.text)
+
+    def url_itemdetails(self, barcode):
+        url = self.method_path("GetItemDetails")
+        url = self.add_barcode_to_url(url, barcode)
+        return self.add_token_to_url(url, self.token)
+
     def url_titledetails(self, rsn):
         url = self.method_path("GetTitleDetails")
         url = self.add_rsn_to_url(url, rsn)
@@ -131,6 +147,9 @@ class LibraryAPI(ServicePackage):
 
     def add_rsn_to_url(self, url, rsn):
         return self.add_param(url, "RSN", rsn)
+
+    def add_barcode_to_url(self, url, barcode):
+        return self.add_param(url, "ItemBarcode", barcode)
 
 
 class CatalogueSearcher(ServicePackage):
