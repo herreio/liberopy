@@ -17,6 +17,8 @@ class WebServices:
         self.LibraryAPI = None
 
     def login(self, user, password):
+        if self.token:
+            self.logout()
         self.Authenticate = Authenticate(self.base, user, password)
         if self.Authenticate.token:
             self.token = self.Authenticate.token
