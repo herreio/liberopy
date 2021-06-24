@@ -1,3 +1,7 @@
+2021-06-24
+
+- prevent duplicate logins
+
 2021-06-23
 
 - create method ServicePackage.soap_request
