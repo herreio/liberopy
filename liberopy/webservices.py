@@ -90,8 +90,8 @@ class ServicePackage:
         try:
             response = requests.get(url)
         except requests.exceptions.RequestException as e:
-                print(e.__class__.__name__)
-                return None
+            print(e.__class__.__name__)
+            return None
         if response.status_code != 200:
             print("HTTP {0}".format(response.status_code))
             return None
