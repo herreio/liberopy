@@ -1,3 +1,7 @@
+2021-08-12
+
+- catch requests exceptions
+
 2021-06-24
 
 - prevent duplicate logins
