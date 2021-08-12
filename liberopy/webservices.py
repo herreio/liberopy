@@ -88,7 +88,7 @@ class ServicePackage:
     @staticmethod
     def get_request(url):
         try:
-            response = requests.get(url)
+            response = requests.get(url, headers={"User-Agent": "liberopy 2021.8.12"})
         except requests.exceptions.RequestException as e:
             print(e.__class__.__name__)
             return None
