@@ -191,7 +191,7 @@ class Authenticate(ServicePackage):
         url = self.url_login(user, password)
         response = self.get_request(url)
         if response and response.text:
-            return self._extract_token(response.text)
+            return self.extract_token(response.text)
 
     def logout(self):
         url = self.url_logout(self.token)
@@ -209,6 +209,7 @@ class Authenticate(ServicePackage):
         url = self.method_path("Logout")
         return self.add_token_to_url(url, token)
 
-    def _extract_token(self, response):
+    @staticmethod
+    def extract_token(response):
         found = re.search("<Token>(.+)</Token>", response)
         return found.groups()[0] if found else ""
