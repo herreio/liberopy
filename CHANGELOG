@@ -1,3 +1,7 @@
+2021-08-13
+
+- make method extract_token static
+
 2021-08-12
 
 - set user agent
