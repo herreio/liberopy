@@ -2,9 +2,10 @@
 
 import re
 import atexit
-import logging
 import requests
 from lxml import etree
+
+from .log import logger
 
 
 class WebServices:
@@ -13,7 +14,7 @@ class WebServices:
         self.domain = domain
         self.base = "{0}/LiberoWebServices".format(self.domain)
         self.token = None
-        self.logger = logging.getLogger("liberopy")
+        self.logger = logger
         self.Authenticate = None
         self.CatalogueSearcher = None
         self.LibraryAPI = None
@@ -86,7 +87,7 @@ class ServicePackage:
         self.base = base
         self.name = name
         self.path = "{0}.{1}.cls".format(self.base, self.name)
-        self.logger = logging.getLogger("liberopy")
+        self.logger = logger
 
     def get_request(self, url):
         try:
