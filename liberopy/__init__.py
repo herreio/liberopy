@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Donatus Herre <donatus.herre@slub-dresden.de>"
-__version__ = "2021.8.13"
+__version__ = "2021.8.18"
 __license__ = "GPLv3"
 
 import logging
