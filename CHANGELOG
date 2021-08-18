@@ -1,3 +1,7 @@
+2021-08-18
+
+- use logging instead of print
+
 2021-08-13
 
 - make method extract_token static

@@ -2,6 +2,7 @@
 
 import re
 import atexit
+import logging
 import requests
 from lxml import etree
 
@@ -12,6 +13,7 @@ class WebServices:
         self.domain = domain
         self.base = "{0}/LiberoWebServices".format(self.domain)
         self.token = None
+        self.logger = logging.getLogger("liberopy")
         self.Authenticate = None
         self.CatalogueSearcher = None
         self.LibraryAPI = None
@@ -33,22 +35,22 @@ class WebServices:
             self.CatalogueSearcher = None
             self.LibraryAPI = None
             return
-        print("You are not logged in!")
+        self.logger.warning("You are not logged in!")
 
     def newitems(self):
         if self.token:
             return self.CatalogueSearcher.newitems()
-        print("You have to login first!")
+        self.logger.error("You have to login first!")
 
     def itemdetails(self, barcode):
         if self.token:
             return self.LibraryAPI.itemdetails(barcode)
-        print("You have to login first!")
+        self.logger.error("You have to login first!")
 
     def titledetails(self, rsn):
         if self.token:
             return self.LibraryAPI.titledetails(rsn)
-        print("You have to login first!")
+        self.logger.error("You have to login first!")
 
 
 class ServiceResponse:
@@ -84,16 +86,16 @@ class ServicePackage:
         self.base = base
         self.name = name
         self.path = "{0}.{1}.cls".format(self.base, self.name)
+        self.logger = logging.getLogger("liberopy")
 
-    @staticmethod
-    def get_request(url):
+    def get_request(self, url):
         try:
             response = requests.get(url, headers={"User-Agent": "liberopy 2021.8.12"})
         except requests.exceptions.RequestException as e:
-            print(e.__class__.__name__)
+            self.logger.error(e.__class__.__name__)
             return None
         if response.status_code != 200:
-            print("HTTP {0}".format(response.status_code))
+            self.logger.error("HTTP {0}".format(response.status_code))
             return None
         return response
 
@@ -136,10 +138,12 @@ class LibraryAPI(ServicePackage):
 
     def titledetails(self, rsn):
         url = self.url_titledetails(rsn)
+        self.logger.info("Fetching title with RSN {0}.".format(rsn))
         return self.soap_request(url)
 
     def itemdetails(self, barcode):
         url = self.url_itemdetails(barcode)
+        self.logger.info("Fetching item with barcode {0}.".format(barcode))
         return self.soap_request(url)
 
     def url_itemdetails(self, barcode):
@@ -167,6 +171,7 @@ class CatalogueSearcher(ServicePackage):
 
     def newitems(self):
         url = self.url_newitems()
+        self.logger.info("Searching titles with newitems in LIBERO.")
         return self.soap_request(url)
 
     def url_newitems(self):
@@ -181,11 +186,11 @@ class Authenticate(ServicePackage):
         super().__init__(base, "Authenticate")
         self.token = self.login(user, password)
         if self.token:
-            print("Login successful!")
-            print("Set logout at exit.")
+            self.logger.info("Login successful!")
+            self.logger.info("Set logout at exit.")
             atexit.register(self.logout)
         else:
-            print("Login failed!")
+            self.logger.error("Login failed!")
 
     def login(self, user, password):
         url = self.url_login(user, password)
@@ -198,7 +203,7 @@ class Authenticate(ServicePackage):
         response = self.get_request(url)
         if response:
             atexit.unregister(self.logout)
-            print("Logout successful!")
+            self.logger.info("Logout successful!")
 
     def url_login(self, user, password):
         url = self.method_path("Login")
