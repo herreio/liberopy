@@ -1,3 +1,7 @@
+2021-08-25
+
+- add attribute ServiceResponse.xmlstr_pretty
+
 2021-08-21
 
 - fix version in user-agent

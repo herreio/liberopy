@@ -58,6 +58,7 @@ class ServiceResponse:
 
     def __init__(self, xmlstr):
         self.xmlstr = xmlstr
+        self.xmlstr_pretty = None
         self.parser = etree.XMLParser(remove_blank_text=True)
         self.parser_error = None
         try:
@@ -65,6 +66,8 @@ class ServiceResponse:
         except etree.XMLSyntaxError as err:
             self.parser_error = str(err)
             self.root = None
+        if self.parser_error is None:
+            self.xmlstr_pretty = etree.tostring(self.tree(), pretty_print=True).decode()
 
     def tree(self):
         if self.parser_error is None:
@@ -91,7 +94,7 @@ class ServicePackage:
 
     def get_request(self, url):
         try:
-            response = requests.get(url, headers={"User-Agent": "liberopy 2021.8.21"})
+            response = requests.get(url, headers={"User-Agent": "liberopy 2021.8.25"})
         except requests.exceptions.RequestException as e:
             self.logger.error(e.__class__.__name__)
             return None
