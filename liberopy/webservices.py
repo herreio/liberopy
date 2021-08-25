@@ -58,6 +58,7 @@ class ServiceResponse:
 
     def __init__(self, xmlstr):
         self.xmlstr = xmlstr
+        self.xmlstr_pretty = None
         self.parser = etree.XMLParser(remove_blank_text=True)
         self.parser_error = None
         try:
@@ -65,6 +66,8 @@ class ServiceResponse:
         except etree.XMLSyntaxError as err:
             self.parser_error = str(err)
             self.root = None
+        if self.parser_error is None:
+            self.xmlstr_pretty = etree.tostring(self.tree(), pretty_print=True).decode()
 
     def tree(self):
         if self.parser_error is None:
