@@ -3,6 +3,7 @@
 import re
 import atexit
 import requests
+import dateutil.parser
 from lxml import etree
 
 from .log import logger
@@ -83,6 +84,147 @@ class ServiceResponse:
             xml_tree.write(path, xml_declaration=True,
                            encoding="UTF-8", pretty_print=True)
 
+    def get_text(self, tagname):
+        xml_tree = self.tree()
+        if xml_tree is not None:
+            elem = xml_tree.find("//{0}".format(tagname))
+            if elem is not None:
+                return elem.text.strip()
+
+    def get_elems(self, tagname):
+        xml_tree = self.tree()
+        if xml_tree is not None:
+            return xml_tree.findall("//{0}".format(tagname))
+        return []
+
+    def get_texts(self, tagname):
+        elems = self.get_elems(tagname)
+        if elems is not None:
+            return [e.text.strip() for e in elems if elems]
+        return []
+
+    @staticmethod
+    def ns(tagname):
+        return "{{http://libero.com.au}}{0}".format(tagname)
+
+    def ns_path(self, tagnames):
+        return "/".join(self.ns(tagname) for tagname in tagnames)
+
+    def ns_prep(self, tagname):
+        if type(tagname) == str:
+            return self.ns(tagname)
+        elif type(tagname) == list:
+            return self.ns_path(tagname)
+
+    def text(self, tag):
+        return self.get_text(self.ns_prep(tag))
+
+    def texts(self, tag):
+        return self.get_texts(self.ns_prep(tag))
+
+
+class TitleDetails(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr)
+
+    def get_title(self):
+        return self.text("Title")
+
+    def get_title_clean(self):
+        return self.clean_title(self.get_title())
+
+    def get_main_author(self):
+        return self.text("MainAuthor")
+
+    def get_subtitle(self):
+        return self.text("SubTitle")
+
+    def get_subtitle_clean(self):
+        return self.clean_title(self.get_subtitle())
+
+    def get_display_title(self):
+        return self.text("DisplayTitle")
+
+    def get_display_title_clean(self):
+        return self.clean_title(self.get_display_title())
+
+    def get_created_date(self):
+        return self.text("CreatedDate")
+
+    def get_raw_created_date(self):
+        return self.text("RawCreatedDate")
+
+    def get_last_saved_date(self):
+        return self.text("LastSavedDate")
+
+    def get_edit_date(self):
+        return self.text("EditDate")
+
+    def get_publication_year(self):
+        return self.text("PublicationYear")
+
+    def get_lang_code(self):
+        return self.text(["Language", "Code"])
+
+    def get_lang_desc(self):
+        return self.text(["Language", "Description"])
+
+    def get_stock_items(self):
+        return self.texts(["StockItems", "StockItems", "Barcode"])
+
+    def get_isbn(self):
+        return self.texts(["AlternateISBNs", "AlternateISBNs", "AlternateISBN"])
+
+
+class ItemDetails(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr)
+
+    def get_rsn(self):
+        return self.text("RSNText")
+
+    def get_title(self):
+        return self.text("Title")
+
+    def get_author(self):
+        return self.text("Author")
+
+    def get_date_purchased(self):
+        return self.text("DatePurchased")
+
+    def get_creation_datetime(self):
+        datetime = self.text("CreationDateTime")
+        if datetime:
+            return dateutil.parser.isoparse(datetime)
+
+    def get_newitem_actdate(self):
+        return self.text("NewItemActDate")
+
+    def get_callnumber_maindate(self):
+        datetime = self.text(["ItemCallNumber", "CallNumbers", "DateSetAsMainCallNumber"])
+        if datetime:
+            return dateutil.parser.isoparse(datetime)
+
+    def get_acqtype_code(self):
+        return self.text(["AcquisitionType", "Code"])
+
+    def get_acqtype_desc(self):
+        return self.text(["AcquisitionType", "Description"])
+
+    def get_acqbranch_code(self):
+        return self.text(["BranchPurchasedBy", "Code"])
+
+    def get_acqbranch_desc(self):
+        return self.text(["BranchPurchasedBy", "Description"])
+
+    def get_statistics_code(self):
+        return self.text(["Statistic1", "Code"])
+
+    def get_statistics_desc(self):
+        return self.text(["Statistic1", "Description"])
+
 
 class ServicePackage:
 
@@ -103,10 +245,10 @@ class ServicePackage:
             return None
         return response
 
-    def soap_request(self, url):
+    def soap_request(self, url, post=ServiceResponse):
         response = self.get_request(url)
         if response:
-            return ServiceResponse(response.text)
+            return post(response.text)
 
     @staticmethod
     def set_param(url, name, value):
@@ -143,12 +285,12 @@ class LibraryAPI(ServicePackage):
     def titledetails(self, rsn):
         url = self.url_titledetails(rsn)
         self.logger.info("Fetching title with RSN {0}.".format(rsn))
-        return self.soap_request(url)
+        return self.soap_request(url, post=TitleDetails)
 
     def itemdetails(self, barcode):
         url = self.url_itemdetails(barcode)
         self.logger.info("Fetching item with barcode {0}.".format(barcode))
-        return self.soap_request(url)
+        return self.soap_request(url, post=ItemDetails)
 
     def url_itemdetails(self, barcode):
         url = self.method_path("GetItemDetails")
