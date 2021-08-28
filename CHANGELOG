@@ -1,3 +1,7 @@
+2021-08-29
+
+- add missing method clean_title to TitleDetails
+
 2021-08-28
 
 - add classes ItemDetails and TitleDetails
