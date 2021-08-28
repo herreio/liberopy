@@ -128,6 +128,13 @@ class TitleDetails(ServiceResponse):
     def __init__(self, xmlstr):
         super().__init__(xmlstr)
 
+    @staticmethod
+    def clean_title(title):
+        title_clean = "[o.T.]"
+        if title is not None:
+            title_clean = title.replace("¬", "")
+        return title_clean
+
     def get_title(self):
         return self.text("Title")
 
