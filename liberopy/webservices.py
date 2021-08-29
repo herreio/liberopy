@@ -303,7 +303,7 @@ class ServicePackage:
 
     def get_request(self, url):
         try:
-            response = requests.get(url, headers={"User-Agent": "liberopy 2021.8.29"})
+            response = requests.get(url, headers={"User-Agent": "liberopy 2021.8.30"})
         except requests.exceptions.RequestException as e:
             self.logger.error(e.__class__.__name__)
             return None
