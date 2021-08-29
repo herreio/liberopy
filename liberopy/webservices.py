@@ -135,14 +135,35 @@ class TitleDetails(ServiceResponse):
             title_clean = title.replace("¬", "")
         return title_clean
 
+    def get_rid(self):
+        return self.text("RID")
+
+    def get_rsn(self):
+        return self.text("RSN")
+
     def get_title(self):
         return self.text("Title")
 
     def get_title_clean(self):
         return self.clean_title(self.get_title())
 
+    def get_mabtitle(self):
+        return self.text("MABTitle")
+
     def get_main_author(self):
         return self.text("MainAuthor")
+
+    def get_author_key(self):
+        return self.text("AuthorKey")
+
+    def get_author_display(self):
+        return self.texts(["Author", "Authors", "AuthorDisplayForm"])
+
+    def get_gmd_code(self):
+        return self.text(["GMD", "Code"])
+
+    def get_gmd_desc(self):
+        return self.text(["GMD", "Description"])
 
     def get_subtitle(self):
         return self.text("SubTitle")
@@ -168,6 +189,15 @@ class TitleDetails(ServiceResponse):
     def get_edit_date(self):
         return self.text("EditDate")
 
+    def get_edit_user(self):
+        return self.text("EditByUser")
+
+    def get_collation(self):
+        return self.text("Collation")
+
+    def get_imprint(self):
+        return self.text("Publication")
+
     def get_publication_year(self):
         return self.text("PublicationYear")
 
@@ -192,6 +222,18 @@ class ItemDetails(ServiceResponse):
     def get_rsn(self):
         return self.text("RSNText")
 
+    def get_barcode(self):
+        return self.text("Barcode")
+
+    def get_gmd_code(self):
+        return self.text("GMD")
+
+    def get_times_issued(self):
+        return self.text("TimesIssued")
+
+    def get_total_issues(self):
+        return self.text("TotalIssues")
+
     def get_title(self):
         return self.text("Title")
 
@@ -200,6 +242,9 @@ class ItemDetails(ServiceResponse):
 
     def get_date_purchased(self):
         return self.text("DatePurchased")
+
+    def get_date_reviewed(self):
+        return self.text("ReviewDate")
 
     def get_creation_datetime(self):
         datetime = self.text("CreationDateTime")
@@ -226,11 +271,26 @@ class ItemDetails(ServiceResponse):
     def get_acqbranch_desc(self):
         return self.text(["BranchPurchasedBy", "Description"])
 
+    def get_ownerbranch_code(self):
+        return self.text(["OwnerBranch", "Code"])
+
+    def get_ownerbranch_desc(self):
+        return self.text(["OwnerBranch", "Description"])
+
+    def get_stacklocation_code(self):
+        return self.text(["StackLocation", "Code"])
+
+    def get_stacklocation_desc(self):
+        return self.text(["StackLocation", "Description"])
+
     def get_statistics_code(self):
         return self.text(["Statistic1", "Code"])
 
     def get_statistics_desc(self):
         return self.text(["Statistic1", "Description"])
+
+    def get_webopac_display(self):
+        return True if self.text("WebOPACDisplay") == "true" else False
 
 
 class ServicePackage:
