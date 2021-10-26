@@ -278,6 +278,9 @@ class ItemDetails(ServiceResponse):
     def get_date_reviewed(self):
         return self.text("ReviewDate")
 
+    def get_creation_user(self):
+        return self.text("CreationUser")
+
     def get_creation_datetime(self):
         datetime = self.text("CreationDateTime")
         if datetime:
