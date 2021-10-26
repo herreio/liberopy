@@ -225,8 +225,29 @@ class ItemDetails(ServiceResponse):
     def get_barcode(self):
         return self.text("Barcode")
 
+    def get_callnumber(self):
+        return self.text("CallNumber")
+
+    def get_inventory_number(self):
+        return self.text("InventoryNumber")
+
+    def get_collection(self):
+        return self.text("Collection")
+
+    def get_lending_status(self):
+        return self.text("LendingStatus")
+
+    def get_status_description(self):
+        return self.text("StatusDescription")
+
     def get_gmd_code(self):
         return self.text("GMD")
+
+    def get_item_exception(self):
+        return self.text("ItemException")
+
+    def get_exception_flag(self):
+        return self.text("ExceptionFlag")
 
     def get_times_issued(self):
         return self.text("TimesIssued")
@@ -251,11 +272,28 @@ class ItemDetails(ServiceResponse):
         if datetime:
             return dateutil.parser.isoparse(datetime)
 
+    def get_last_stocktake(self):
+        return self.text("LastStocktake")
+
+    def get_last_borrowed_date(self):
+        return self.text("LastBorrowedDate")
+
     def get_newitem_actdate(self):
         return self.text("NewItemActDate")
 
+    def get_newitem_exclude(self):
+        return True if self.text(["AcquisitionType", "ExcludeFromNewItemList"]) == "true" else False
+
     def get_callnumber_maindate(self):
         datetime = self.text(["ItemCallNumber", "CallNumbers", "DateSetAsMainCallNumber"])
+        if datetime:
+            return dateutil.parser.isoparse(datetime)
+
+    def get_exception_date(self):
+        return self.text("ExceptionDate")
+
+    def get_exception_datetime(self):
+        datetime = self.text("ExceptionDateTime")
         if datetime:
             return dateutil.parser.isoparse(datetime)
 
@@ -303,7 +341,7 @@ class ServicePackage:
 
     def get_request(self, url):
         try:
-            response = requests.get(url, headers={"User-Agent": "liberopy 2021.8.30"})
+            response = requests.get(url, headers={"User-Agent": "liberopy 2021.10.26"})
         except requests.exceptions.RequestException as e:
             self.logger.error(e.__class__.__name__)
             return None
