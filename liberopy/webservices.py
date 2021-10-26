@@ -283,7 +283,7 @@ class ItemDetails(ServiceResponse):
 
     def get_creation_datetime(self):
         datetime = self.text("CreationDateTime")
-        if datetime:
+        if datetime is not None:
             return dateutil.parser.isoparse(datetime)
 
     def get_last_stocktake(self):
@@ -379,7 +379,7 @@ class ItemDetails(ServiceResponse):
 
     def get_exception_datetime(self):
         datetime = self.text("ExceptionDateTime")
-        if datetime:
+        if datetime is not None:
             return dateutil.parser.isoparse(datetime)
 
     def get_acqtype_code(self):
