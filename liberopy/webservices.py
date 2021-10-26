@@ -84,12 +84,17 @@ class ServiceResponse:
             xml_tree.write(path, xml_declaration=True,
                            encoding="UTF-8", pretty_print=True)
 
-    def get_text(self, tagname):
+    def get_elem(self, tagname):
         xml_tree = self.tree()
         if xml_tree is not None:
             elem = xml_tree.find("//{0}".format(tagname))
             if elem is not None:
-                return elem.text.strip()
+                return elem
+
+    def get_text(self, tagname):
+        elem = self.get_elem(tagname)
+        if elem is not None:
+            return elem.text.strip()
 
     def get_elems(self, tagname):
         xml_tree = self.tree()
@@ -115,6 +120,12 @@ class ServiceResponse:
             return self.ns(tagname)
         elif type(tagname) == list:
             return self.ns_path(tagname)
+
+    def elem(self, tag):
+        return self.get_elem(self.ns_prep(tag))
+
+    def elems(self, tag):
+        return self.get_elems(self.ns_prep(tag))
 
     def text(self, tag):
         return self.get_text(self.ns_prep(tag))
@@ -284,10 +295,81 @@ class ItemDetails(ServiceResponse):
     def get_newitem_exclude(self):
         return True if self.text(["AcquisitionType", "ExcludeFromNewItemList"]) == "true" else False
 
+    def get_cost_trans_number_latest(self):
+        return self.text("LastCostTransactionNumber")
+
+    def _get_cost_trans(self, number):
+        cost_trans_elems = self.elems(["CostTrans", "CostTransactions"])
+        for cost_trans in cost_trans_elems:
+            cost_trans_num = cost_trans.find(self.ns_prep("TransNumber"))
+            if cost_trans_num is not None:
+                if cost_trans_num.text == str(number):
+                    return cost_trans
+
+    def _get_cost_trans_latest(self):
+        cost_trans_num = self.get_cost_trans_number_latest()
+        if cost_trans_num is not None:
+            return self._get_cost_trans(cost_trans_num)
+
+    def _get_cost_trans_latest_field(self, field):
+        cost_trans_elem = self._get_cost_trans_latest()
+        if cost_trans_elem is not None:
+            cost_trans_field_elem = cost_trans_elem.find(self.ns_prep(field))
+            if cost_trans_field_elem is not None:
+                return cost_trans_field_elem.text
+
+    def get_cost_trans_date(self):
+        return self._get_cost_trans_latest_field("TransDate")
+
+    def get_cost_trans_type_code(self):
+        return self._get_cost_trans_latest_field(["Type", "Code"])
+
+    def get_cost_trans_type_desc(self):
+        return self._get_cost_trans_latest_field(["Type", "Description"])
+
+    def get_cost_trans_budget_year(self):
+        return self._get_cost_trans_latest_field(["BudgetYear"])
+
+    def _get_callnumbers(self):
+        return self.elems(["ItemCallNumber", "CallNumbers"])
+
+    def _get_callnumbers_field(self, field):
+        target_values = []
+        callnumber_elems = self._get_callnumbers()
+        for callnumber_elem in callnumber_elems:
+            target_elem = callnumber_elem.find(self.ns_prep(field))
+            if target_elem is not None:
+                target_values.append(target_elem.text)
+        return target_values
+
+    def get_callnumbers(self):
+        return self._get_callnumbers_field("CallNumber")
+
+    def get_callnumbers_maindates(self):
+        callnumber_datetimes = []
+        for callnumber_maindate_str in self._get_callnumbers_field("DateSetAsMainCallNumber"):
+            if callnumber_maindate_str is not None:
+                callnumber_datetimes.append(dateutil.parser.isoparse(callnumber_maindate_str))
+        return callnumber_datetimes
+
+    def _get_callnumber(self):
+        callnumber = self.get_callnumber()
+        callnumber_elems = self._get_callnumbers()
+        for callnumber_elem in callnumber_elems:
+            elem_num = callnumber_elem.find(self.ns_prep("CallNumber"))
+            if elem_num is not None and elem_num.text == callnumber:
+                return callnumber_elem
+
+    def _get_callnumber_field(self, field):
+        callnumber_elem = self._get_callnumber()
+        target_elem = callnumber_elem.find(self.ns_prep(field))
+        if target_elem is not None:
+            return target_elem.text
+
     def get_callnumber_maindate(self):
-        datetime = self.text(["ItemCallNumber", "CallNumbers", "DateSetAsMainCallNumber"])
-        if datetime:
-            return dateutil.parser.isoparse(datetime)
+        callnumber_datetime_str = self._get_callnumber_field("DateSetAsMainCallNumber")
+        if callnumber_datetime_str is not None:
+            return dateutil.parser.isoparse(callnumber_datetime_str)
 
     def get_exception_date(self):
         return self.text("ExceptionDate")
@@ -341,7 +423,7 @@ class ServicePackage:
 
     def get_request(self, url):
         try:
-            response = requests.get(url, headers={"User-Agent": "liberopy 2021.10.26"})
+            response = requests.get(url, headers={"User-Agent": "liberopy 2021.10.27"})
         except requests.exceptions.RequestException as e:
             self.logger.error(e.__class__.__name__)
             return None
