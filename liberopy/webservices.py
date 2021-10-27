@@ -21,7 +21,7 @@ class WebServices:
         self.LibraryAPI = None
 
     def login(self, user, password):
-        if self.token:
+        if self.token is not None:
             self.logout()
         self.Authenticate = Authenticate(self.base, user, password)
         if self.Authenticate.token:
@@ -30,7 +30,7 @@ class WebServices:
             self.LibraryAPI = LibraryAPI(self.base, self.token)
 
     def logout(self):
-        if self.token:
+        if self.token is not None:
             self.token = None
             self.Authenticate.logout()
             self.Authenticate = None
@@ -40,17 +40,17 @@ class WebServices:
         self.logger.warning("You are not logged in!")
 
     def newitems(self):
-        if self.token:
+        if self.token is not None:
             return self.CatalogueSearcher.newitems()
         self.logger.error("You have to login first!")
 
     def itemdetails(self, barcode):
-        if self.token:
+        if self.token is not None:
             return self.LibraryAPI.itemdetails(barcode)
         self.logger.error("You have to login first!")
 
     def titledetails(self, rsn):
-        if self.token:
+        if self.token is not None:
             return self.LibraryAPI.titledetails(rsn)
         self.logger.error("You have to login first!")
 
@@ -278,9 +278,12 @@ class ItemDetails(ServiceResponse):
     def get_date_reviewed(self):
         return self.text("ReviewDate")
 
+    def get_creation_user(self):
+        return self.text("CreationUser")
+
     def get_creation_datetime(self):
         datetime = self.text("CreationDateTime")
-        if datetime:
+        if datetime is not None:
             return dateutil.parser.isoparse(datetime)
 
     def get_last_stocktake(self):
@@ -376,7 +379,7 @@ class ItemDetails(ServiceResponse):
 
     def get_exception_datetime(self):
         datetime = self.text("ExceptionDateTime")
-        if datetime:
+        if datetime is not None:
             return dateutil.parser.isoparse(datetime)
 
     def get_acqtype_code(self):
@@ -423,7 +426,7 @@ class ServicePackage:
 
     def get_request(self, url):
         try:
-            response = requests.get(url, headers={"User-Agent": "liberopy 2021.10.27"})
+            response = requests.get(url, headers={"User-Agent": "liberopy 2021.10.28"})
         except requests.exceptions.RequestException as e:
             self.logger.error(e.__class__.__name__)
             return None
@@ -434,7 +437,7 @@ class ServicePackage:
 
     def soap_request(self, url, post=ServiceResponse):
         response = self.get_request(url)
-        if response:
+        if response is not None:
             return post(response.text)
 
     @staticmethod
@@ -446,7 +449,7 @@ class ServicePackage:
 
     def wsdl(self):
         response = self.get_request(self.url_wsdl())
-        if response:
+        if response is not None:
             return ServiceResponse(response.text)
 
     def method_path(self, method):
@@ -518,7 +521,7 @@ class Authenticate(ServicePackage):
     def __init__(self, base, user, password):
         super().__init__(base, "Authenticate")
         self.token = self.login(user, password)
-        if self.token:
+        if self.token is not None:
             self.logger.info("Login successful!")
             self.logger.info("Set logout at exit.")
             atexit.register(self.logout)
@@ -528,13 +531,13 @@ class Authenticate(ServicePackage):
     def login(self, user, password):
         url = self.url_login(user, password)
         response = self.get_request(url)
-        if response and response.text:
+        if response is not None and response.text is not None:
             return self.extract_token(response.text)
 
     def logout(self):
         url = self.url_logout(self.token)
         response = self.get_request(url)
-        if response:
+        if response is not None:
             atexit.unregister(self.logout)
             self.logger.info("Logout successful!")
 
@@ -550,4 +553,4 @@ class Authenticate(ServicePackage):
     @staticmethod
     def extract_token(response):
         found = re.search("<Token>(.+)</Token>", response)
-        return found.groups()[0] if found else ""
+        return found.groups()[0] if found else None
