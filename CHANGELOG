@@ -1,3 +1,7 @@
+2021-11-09
+
+- add method ServiceResponse.found to detect empty responses
+
 2021-11-08
 
 - update XML parsing in ServiceResponse
