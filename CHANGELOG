@@ -1,4 +1,4 @@
-2021-11-09
+2021-11-08
 
 - update XML parsing in ServiceResponse
 - check for NoneType in ServiceResponse.get_text
