@@ -57,7 +57,7 @@ class WebServices:
 
 class ServiceResponse:
 
-    def __init__(self, xmlstr):
+    def __init__(self, xmlstr, tagname=None):
         self.xmlstr = xmlstr
         self.xmlstr_pretty = None
         self.parser = etree.XMLParser(remove_blank_text=True)
@@ -73,6 +73,7 @@ class ServiceResponse:
                 self.root = None
         if self.root is not None:
             self.xmlstr_pretty = etree.tostring(self.tree(), pretty_print=True).decode()
+        self.tagname = tagname
 
     def tree(self):
         if self.root is not None:
@@ -137,11 +138,20 @@ class ServiceResponse:
     def texts(self, tag):
         return self.get_texts(self.ns_prep(tag))
 
+    def found(self):
+        if self.root is not None:
+            if self.tagname is not None:
+                payload = self.elem(self.tagname)
+                if payload is not None:
+                    if len(payload.getchildren()) > 0:
+                        return True
+                    return False
+
 
 class TitleDetails(ServiceResponse):
 
     def __init__(self, xmlstr):
-        super().__init__(xmlstr)
+        super().__init__(xmlstr, tagname="GetTitleDetailsResponse")
 
     @staticmethod
     def clean_title(title):
@@ -232,7 +242,7 @@ class TitleDetails(ServiceResponse):
 class ItemDetails(ServiceResponse):
 
     def __init__(self, xmlstr):
-        super().__init__(xmlstr)
+        super().__init__(xmlstr, tagname="GetItemDetailsResponse")
 
     def get_rsn(self):
         return self.text("RSNText")
