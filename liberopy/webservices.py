@@ -66,12 +66,16 @@ class ServiceResponse:
             self.root = etree.fromstring(xmlstr.encode("utf-8"), self.parser)
         except etree.XMLSyntaxError as err:
             self.parser_error = str(err)
-            self.root = None
-        if self.parser_error is None:
+            self.parser = etree.XMLParser(remove_blank_text=True, recover=True)
+            try:
+                self.root = etree.fromstring(xmlstr.encode("utf-8"), self.parser)
+            except etree.XMLSyntaxError as err:
+                self.root = None
+        if self.root is not None:
             self.xmlstr_pretty = etree.tostring(self.tree(), pretty_print=True).decode()
 
     def tree(self):
-        if self.parser_error is None:
+        if self.root is not None:
             return etree.ElementTree(self.root)
 
     def store(self, path):
@@ -93,7 +97,7 @@ class ServiceResponse:
 
     def get_text(self, tagname):
         elem = self.get_elem(tagname)
-        if elem is not None:
+        if elem is not None and elem.text is not None:
             return elem.text.strip()
 
     def get_elems(self, tagname):
@@ -105,7 +109,7 @@ class ServiceResponse:
     def get_texts(self, tagname):
         elems = self.get_elems(tagname)
         if elems is not None:
-            return [e.text.strip() for e in elems if elems]
+            return [e.text.strip() for e in elems if e is not None and e.text is not None]
         return []
 
     @staticmethod
@@ -426,7 +430,7 @@ class ServicePackage:
 
     def get_request(self, url):
         try:
-            response = requests.get(url, headers={"User-Agent": "liberopy 2021.10.28"})
+            response = requests.get(url, headers={"User-Agent": "liberopy 2021.11.8"})
         except requests.exceptions.RequestException as e:
             self.logger.error(e.__class__.__name__)
             return None

@@ -1,3 +1,9 @@
+2021-11-09
+
+- update XML parsing in ServiceResponse
+- check for NoneType in ServiceResponse.get_text
+- check for NoneType in ServiceResponse.get_texts
+
 2021-10-28
 
 - make not None conditions explicit
