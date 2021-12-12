@@ -2,18 +2,23 @@
 
 This Python package provides a Libero Web Services SOAP API client.
 
+## Setup
+
+### SSH
+
+```sh
+pip install -e git+ssh://git@github.com/herreio/liberopy.git#egg=liberopy
+```
+
+### HTTPS
+
+```sh
+pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
+```
+
 ## Requirements
 
 - [Libero LMS](http://www.libero.com.au/) (tested on 6.3.22)
-
-## Setup
-
-```sh
-# ... via SSH:
-pip install -e git+ssh://git@github.com/herreio/liberopy.git#egg=liberopy
-# ... or via HTTPS:
-pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
-```
 
 ## Classes and Methods
 
@@ -22,7 +27,7 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
 - Library API: GetTitleDetails
 - Library API: GetItemDetails
 
-## Usage
+## Usage Example
 
 ```py
 import liberopy
