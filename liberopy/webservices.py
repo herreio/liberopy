@@ -2,32 +2,42 @@
 
 import re
 import atexit
+import logging
 import requests
 import dateutil.parser
 from lxml import etree
 
-from .log import logger
-
 
 class WebServices:
 
-    def __init__(self, domain):
+    def __init__(self, domain, loglevel=logging.DEBUG):
         self.domain = domain
         self.base = "{0}/LiberoWebServices".format(self.domain)
         self.token = None
-        self.logger = logger
+        self.logger = None
         self.Authenticate = None
         self.CatalogueSearcher = None
         self.LibraryAPI = None
+        self._logger(loglevel)
+
+    def _logger(self, level):
+        self.logger = logging.getLogger("liberopy.WebServices")
+        if not self.logger.handlers:
+            stream = logging.StreamHandler()
+            stream.setLevel(level)
+            formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s", "%Y-%m-%d %H:%M:%S")
+            stream.setFormatter(formatter)
+            self.logger.addHandler(stream)
+            self.logger.setLevel(level)
 
     def login(self, user, password):
         if self.token is not None:
             self.logout()
-        self.Authenticate = Authenticate(self.base, user, password)
+        self.Authenticate = Authenticate(self.base, user, password, loglevel=self.logger.level)
         if self.Authenticate.token:
             self.token = self.Authenticate.token
-            self.CatalogueSearcher = CatalogueSearcher(self.base, self.token)
-            self.LibraryAPI = LibraryAPI(self.base, self.token)
+            self.CatalogueSearcher = CatalogueSearcher(self.base, self.token, loglevel=self.logger.level)
+            self.LibraryAPI = LibraryAPI(self.base, self.token, loglevel=self.logger.level)
 
     def logout(self):
         if self.token is not None:
@@ -42,17 +52,17 @@ class WebServices:
     def newitems(self):
         if self.token is not None:
             return self.CatalogueSearcher.newitems()
-        self.logger.error("You have to login first!")
+        self.logger.error("You have to log in first!")
 
     def itemdetails(self, barcode):
         if self.token is not None:
             return self.LibraryAPI.itemdetails(barcode)
-        self.logger.error("You have to login first!")
+        self.logger.error("You have to log in first!")
 
     def titledetails(self, rsn):
         if self.token is not None:
             return self.LibraryAPI.titledetails(rsn)
-        self.logger.error("You have to login first!")
+        self.logger.error("You have to log in first!")
 
 
 class ServiceResponse:
@@ -432,15 +442,26 @@ class ItemDetails(ServiceResponse):
 
 class ServicePackage:
 
-    def __init__(self, base, name):
+    def __init__(self, base, name, loglevel=logging.DEBUG):
         self.base = base
         self.name = name
         self.path = "{0}.{1}.cls".format(self.base, self.name)
-        self.logger = logger
+        self.logger = None
+        self._logger(loglevel)
+
+    def _logger(self, level):
+        self.logger = logging.getLogger("liberopy.webservices.{0}".format(self.name))
+        if not self.logger.handlers:
+            stream = logging.StreamHandler()
+            stream.setLevel(level)
+            formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s", "%Y-%m-%d %H:%M:%S")
+            stream.setFormatter(formatter)
+            self.logger.addHandler(stream)
+            self.logger.setLevel(level)
 
     def get_request(self, url):
         try:
-            response = requests.get(url, headers={"User-Agent": "liberopy 2021.11.9"})
+            response = requests.get(url, headers={"User-Agent": "liberopy 2021.12.12"})
         except requests.exceptions.RequestException as e:
             self.logger.error(e.__class__.__name__)
             return None
@@ -482,18 +503,18 @@ class ServicePackage:
 
 class LibraryAPI(ServicePackage):
 
-    def __init__(self, base, token):
-        super().__init__(base, "LibraryAPI")
+    def __init__(self, base, token, loglevel=logging.DEBUG):
+        super().__init__(base, "LibraryAPI", loglevel=loglevel)
         self.token = token
 
     def titledetails(self, rsn):
         url = self.url_titledetails(rsn)
-        self.logger.info("Fetching title with RSN {0}.".format(rsn))
+        self.logger.info("Fetch title with RSN {0}.".format(rsn))
         return self.soap_request(url, post=TitleDetails)
 
     def itemdetails(self, barcode):
         url = self.url_itemdetails(barcode)
-        self.logger.info("Fetching item with barcode {0}.".format(barcode))
+        self.logger.info("Fetch item with barcode {0}.".format(barcode))
         return self.soap_request(url, post=ItemDetails)
 
     def url_itemdetails(self, barcode):
@@ -515,13 +536,13 @@ class LibraryAPI(ServicePackage):
 
 class CatalogueSearcher(ServicePackage):
 
-    def __init__(self, base, token):
-        super().__init__(base, "CatalogueSearcher")
+    def __init__(self, base, token, loglevel=logging.DEBUG):
+        super().__init__(base, "CatalogueSearcher", loglevel=loglevel)
         self.token = token
 
     def newitems(self):
         url = self.url_newitems()
-        self.logger.info("Searching titles with newitems in LIBERO.")
+        self.logger.info("Search titles with newitems in LIBERO.")
         return self.soap_request(url)
 
     def url_newitems(self):
@@ -532,8 +553,8 @@ class CatalogueSearcher(ServicePackage):
 
 class Authenticate(ServicePackage):
 
-    def __init__(self, base, user, password):
-        super().__init__(base, "Authenticate")
+    def __init__(self, base, user, password, loglevel=logging.DEBUG):
+        super().__init__(base, "Authenticate", loglevel=loglevel)
         self.token = self.login(user, password)
         if self.token is not None:
             self.logger.info("Login successful!")
