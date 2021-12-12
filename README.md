@@ -4,7 +4,7 @@ This Python package provides a Libero Web Services SOAP API client.
 
 ## Setup
 
-### ...via SSH
+### ... via SSH
 
 ```sh
 pip install -e git+ssh://git@github.com/herreio/liberopy.git#egg=liberopy
