@@ -1,3 +1,8 @@
+2021-12-12
+
+- add README to package
+- improve handling of logger
+
 2021-11-09
 
 - add method ServiceResponse.found to detect empty responses
