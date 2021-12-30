@@ -354,8 +354,14 @@ class ItemDetails(ServiceResponse):
     def get_cost_trans_type_desc(self):
         return self._get_cost_trans_latest_field(["Type", "Description"])
 
+    def get_cost_trans_order_num(self):
+        return self._get_cost_trans_latest_field("OrderNum")
+
+    def get_cost_trans_invoice_num(self):
+        return self._get_cost_trans_latest_field("InvoiceNum")
+
     def get_cost_trans_budget_year(self):
-        return self._get_cost_trans_latest_field(["BudgetYear"])
+        return self._get_cost_trans_latest_field("BudgetYear")
 
     def _get_callnumbers(self):
         return self.elems(["ItemCallNumber", "CallNumbers"])
@@ -423,6 +429,18 @@ class ItemDetails(ServiceResponse):
 
     def get_ownerbranch_desc(self):
         return self.text(["OwnerBranch", "Description"])
+
+    def get_supplier_code(self):
+        return self.text("SupplierCode")
+
+    def get_order_code(self):
+        return self.text("OrderCode")
+
+    def get_order_number(self):
+        return self.text("OrderNumber")
+
+    def get_order_line(self):
+        return self.text("OrderLine")
 
     def get_stacklocation_code(self):
         return self.text(["StackLocation", "Code"])
