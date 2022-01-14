@@ -49,6 +49,13 @@ class WebServices:
             return
         self.logger.warning("You are not logged in!")
 
+    def rid2rsn(self, rid):
+        if self.token is not None:
+            return self.CatalogueSearcher.rid2rsn(rid)
+        else:
+            cs = CatalogueSearcher(self.base, self.token, loglevel=self.logger.level)
+            return cs.rid2rsn(rid)
+
     def newitems(self):
         if self.token is not None:
             return self.CatalogueSearcher.newitems()
@@ -170,10 +177,24 @@ class CatalogueSearcher(ServicePackage):
         self.logger.info("Search titles with newitems in LIBERO.")
         return self.soap_request(url)
 
+    def rid2rsn(self, rid):
+        url = self.url_rid2rsn(rid)
+        self.logger.info("Fetch RSN for title with RID {0}.".format(rid))
+        response = self.soap_request(url, post=ServiceResponse)
+        if response is not None:
+            return response.text("GetRsnByRIDResult")
+
+    def url_rid2rsn(self, rid):
+        url = self.method_path("GetRsnByRID")
+        return self.add_rid_to_url(url, rid)
+
     def url_newitems(self):
         url = self.method_path("Catalogue")
         url = self.add_type_to_url(url, "newitem")
         return self.add_token_to_url(url, self.token)
+
+    def add_rid_to_url(self, url, rid):
+        return self.add_param(url, "RID", rid)
 
 
 class Authenticate(ServicePackage):
