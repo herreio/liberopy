@@ -166,6 +166,9 @@ class TitleDetails(ServiceResponse):
     def get_edit_user(self):
         return self.text("EditByUser")
 
+    def get_number_of_orders(self):
+        return self.text("NumberOfOrders")
+
     def get_collation(self):
         return self.text("Collation")
 
