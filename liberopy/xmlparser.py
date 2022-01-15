@@ -463,8 +463,14 @@ class OrderLineInformation(ServiceResponse):
     def __init__(self, xmlstr):
         super().__init__(xmlstr, tagname="OrderLineInformationResponse")
 
+    def get_title(self):
+        return self.text("Title")
+
     def get_invoice_number(self):
         return self.text("InvoiceNumber")
+
+    def get_invoice_date(self):
+        return self.text("InvoiceDate")
 
     def get_delivery_date(self):
         return self.text("ExpectedDeliveryDate")
@@ -472,8 +478,17 @@ class OrderLineInformation(ServiceResponse):
     def get_date_ordered(self):
         return self.text("DateOrdered")
 
+    def get_date_paid(self):
+        return self.text("DatePaid")
+
+    def get_date_printed(self):
+        return self.text("DatePrinted")
+
     def get_print_status(self):
         return self.text("PrintStatus")
+
+    def get_payment_date(self):
+        return self.text("ExpectedPaymentDate")
 
     def get_order_status(self):
         return self.text("OrderStatus")
@@ -495,3 +510,18 @@ class OrderLineInformation(ServiceResponse):
 
     def get_budget_year(self):
         return self.text("BudgetYear")
+
+    def get_supplier_id(self):
+        return self.text("SupplierID")
+
+    def get_supplier_code(self):
+        return self.text("SupplierCode")
+
+    def get_claim_code(self):
+        return self.text("ClaimCode")
+
+    def get_owner_branch(self):
+        return self.text("OwnerBranch")
+
+    def get_dispatch_code(self):
+        return self.text("DispatchCode")
