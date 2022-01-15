@@ -148,6 +148,9 @@ class TitleDetails(ServiceResponse):
     def get_subtitle(self):
         return self.text("SubTitle")
 
+    def get_series(self):
+        return self.text("Series")
+
     def get_subtitle_clean(self):
         return self.clean_title(self.get_subtitle())
 
@@ -193,8 +196,23 @@ class TitleDetails(ServiceResponse):
     def get_stock_items(self):
         return self.texts(["StockItems", "StockItems", "Barcode"])
 
+    def get_issn(self):
+        return self.text("ISSN")
+
+    def get_alternate_issn(self):
+        return self.texts(["AlternateISSNs", "AlternateISSNs", "AlternateISSN"])
+
     def get_isbn(self):
+        return self.text("ISBN")
+
+    def get_alternate_isbn(self):
         return self.texts(["AlternateISBNs", "AlternateISBNs", "AlternateISBN"])
+
+    def get_class_main(self):
+        return self.text("ClassMain")
+
+    def get_classifications(self):
+        return self.texts(["Classification", "Classifications", "Classification"])
 
 
 class ItemDetails(ServiceResponse):
