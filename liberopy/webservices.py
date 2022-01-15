@@ -5,7 +5,8 @@ import atexit
 import logging
 import requests
 
-from .xmlparser import ServiceResponse, ItemDetails, TitleDetails
+from .xmlparser import ServiceResponse, ItemDetails, TitleDetails,\
+    OrderInformation, OrderLineInformation, OrderStatus
 
 
 class WebServices:
@@ -69,6 +70,21 @@ class WebServices:
     def titledetails(self, rsn):
         if self.token is not None:
             return self.LibraryAPI.titledetails(rsn)
+        self.logger.error("You have to log in first!")
+
+    def orderstatus(self, on, ln):
+        if self.token is not None:
+            return self.LibraryAPI.orderstatus(on, ln)
+        self.logger.error("You have to log in first!")
+
+    def orderinfo(self, on):
+        if self.token is not None:
+            return self.LibraryAPI.orderinfo(on)
+        self.logger.error("You have to log in first!")
+
+    def orderlineinfo(self, on, ln):
+        if self.token is not None:
+            return self.LibraryAPI.orderlineinfo(on, ln)
         self.logger.error("You have to log in first!")
 
 
@@ -149,6 +165,21 @@ class LibraryAPI(ServicePackage):
         self.logger.info("Fetch item with barcode {0}.".format(barcode))
         return self.soap_request(url, post=ItemDetails)
 
+    def orderstatus(self, on, ln):
+        url = self.url_orderstatus(on, ln)
+        self.logger.info("Fetch status of order line {0}/{1}.".format(on, ln))
+        return self.soap_request(url, post=OrderStatus)
+
+    def orderinfo(self, on):
+        url = self.url_orderinfo(on)
+        self.logger.info("Fetch order {0}.".format(on))
+        return self.soap_request(url, post=OrderInformation)
+
+    def orderlineinfo(self, on, ln):
+        url = self.url_orderlineinfo(on, ln)
+        self.logger.info("Fetch order line {0}/{1}.".format(on, ln))
+        return self.soap_request(url, post=OrderLineInformation)
+
     def url_itemdetails(self, barcode):
         url = self.method_path("GetItemDetails")
         url = self.add_barcode_to_url(url, barcode)
@@ -159,11 +190,37 @@ class LibraryAPI(ServicePackage):
         url = self.add_rsn_to_url(url, rsn)
         return self.add_token_to_url(url, self.token)
 
+    def url_orderstatus(self, on, ln):
+        url = self.method_path("OrderStatus")
+        url = self.add_ordernum_to_url(url, on)
+        url = self.add_orderline_to_url(url, ln)
+        return self.add_token_to_url(url, self.token)
+
+    def url_orderinfo(self, on):
+        url = self.method_path("OrderInformation")
+        url = self.add_ordernum_to_url(url, on)
+        return self.add_token_to_url(url, self.token)
+
+    def url_orderlineinfo(self, on, ln):
+        url = self.method_path("OrderLineInformation")
+        url = self.add_ordernum_to_url(url, on)
+        url = self.add_linenum_to_url(url, ln)
+        return self.add_token_to_url(url, self.token)
+
     def add_rsn_to_url(self, url, rsn):
         return self.add_param(url, "RSN", rsn)
 
     def add_barcode_to_url(self, url, barcode):
         return self.add_param(url, "ItemBarcode", barcode)
+
+    def add_ordernum_to_url(self, url, on):
+        return self.add_param(url, "OrderNumber", on)
+
+    def add_linenum_to_url(self, url, ln):
+        return self.add_param(url, "LineNumber", ln)
+
+    def add_orderline_to_url(self, url, ln):
+        return self.add_param(url, "OrderLine", ln)
 
 
 class CatalogueSearcher(ServicePackage):

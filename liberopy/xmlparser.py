@@ -398,3 +398,76 @@ class ItemDetails(ServiceResponse):
 
     def get_webopac_display(self):
         return True if self.text("WebOPACDisplay") == "true" else False
+
+
+class OrderStatus(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="OrderStatusResponse")
+
+    def get_status(self):
+        return self.text("Status")
+
+    def get_message(self):
+        return self.text("Message")
+
+
+class OrderInformation(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="OrderInformationResponse")
+
+    def get_id(self):
+        return self.text("ID")
+
+    def get_order_code(self):
+        return self.text("OrderCode")
+
+    def is_open(self):
+        return self.text("OpenOrder")
+
+    def found(self):
+        result = self.elem("OrderInformationResult")
+        if result is not None:
+            if len(result.getchildren()) > 0:
+                return True
+            return False
+
+
+class OrderLineInformation(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="OrderLineInformationResponse")
+
+    def get_invoice_number(self):
+        return self.text("InvoiceNumber")
+
+    def get_delivery_date(self):
+        return self.text("ExpectedDeliveryDate")
+
+    def get_date_ordered(self):
+        return self.text("DateOrdered")
+
+    def get_print_status(self):
+        return self.text("PrintStatus")
+
+    def get_order_status(self):
+        return self.text("OrderStatus")
+
+    def get_order_type(self):
+        return self.text("OrderType")
+
+    def get_order_code(self):
+        return self.text("OrderCode")
+
+    def get_order_line(self):
+        return self.text("OrderLine")
+
+    def get_barcode(self):
+        return self.text("Barcode")
+
+    def get_acquisition(self):
+        return self.text("Acquisition")
+
+    def get_budget_year(self):
+        return self.text("BudgetYear")
