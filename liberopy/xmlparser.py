@@ -87,12 +87,18 @@ class ServiceResponse:
     def texts(self, tag):
         return self.get_texts(self.ns_prep(tag))
 
+    def message(self):
+        return self.text([self.tagname, "Message"])
+
     def found(self):
         if self.root is not None:
             if self.tagname is not None:
                 payload = self.elem(self.tagname)
                 if payload is not None:
                     if len(payload.getchildren()) > 0:
+                        message = self.message()
+                        if message == 'An invalid security token was provided':
+                            return None
                         return True
                     return False
 
