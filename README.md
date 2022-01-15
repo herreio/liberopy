@@ -22,10 +22,18 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
 
 ## Classes and Methods
 
-- Authenticate: Login / Logout
-- Catalogue Searcher: Catalogue (Type=newitem)
-- Library API: GetTitleDetails
-- Library API: GetItemDetails
+- Authenticate
+    - Login
+    - Logout
+- Catalogue Searcher
+    - Catalogue (Type=newitem)
+    - GetRsnByRID
+- Library API
+    - GetTitleDetails
+    - GetItemDetails
+    - OrderStatus
+    - OrderInformation
+    - OrderLineInformation
 
 ## Usage Example
 
@@ -41,4 +49,12 @@ title = libero.titledetails("123456")
 item = libero.itemdetails("123456")
 # Retrieve list of titles with new items
 newlist = libero.newitems()
+# Get RSN of title from the provided RID
+rsn = libero.rid2rsn("123456")
+# Retrieve header information for an order
+orderinfo = libero.orderinfo("725")
+# Retrieve the order’s line number information
+orderlineinfo = libero.orderlineinfo("9", "1")
+# Retrieve the current order status
+orderlineinfo = libero.orderstatus("1", "1")
 ```
