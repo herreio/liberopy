@@ -1,3 +1,10 @@
+2022-01-15
+
+- add CatalogueSearcher method GetRsnByRID
+- add order method to TitleDetails
+- add LibraryAPI order methods
+- check for invalid security token in ServicePackage.found
+
 2021-12-30
 
 - create module xmlparser
