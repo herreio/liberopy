@@ -4,7 +4,7 @@ import setuptools
 
 setuptools.setup(
     name="liberopy",
-    version="2022.1.17",
+    version="2022.1.18",
     author="Donatus Herre",
     author_email="donatus.herre@slub-dresden.de",
     description="LIBERO Web Services SOAP API Client",
