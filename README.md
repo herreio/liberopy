@@ -56,5 +56,5 @@ orderinfo = libero.orderinfo("725")
 # Retrieve the order’s line number information
 orderlineinfo = libero.orderlineinfo("9", "1")
 # Retrieve the current order status
-orderlineinfo = libero.orderstatus("1", "1")
+orderstatus = libero.orderstatus("1", "1")
 ```
