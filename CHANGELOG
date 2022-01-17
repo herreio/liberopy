@@ -1,3 +1,7 @@
+2022-01-19
+
+- fix parsing of CallNumber
+
 2022-01-18
 
 - add methods to OrderLineInformation
