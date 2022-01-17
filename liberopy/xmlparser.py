@@ -227,7 +227,7 @@ class ItemDetails(ServiceResponse):
         return self.text("Barcode")
 
     def get_callnumber(self):
-        return self.text("CallNumber")
+        return self.text(["GetItemDetailsResult", "CallNumber"])
 
     def get_inventory_number(self):
         return self.text("InventoryNumber")
