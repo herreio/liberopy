@@ -18,7 +18,7 @@ class ServiceResponse:
             self.parser = etree.XMLParser(remove_blank_text=True, recover=True)
             try:
                 self.root = etree.fromstring(xmlstr.encode("utf-8"), self.parser)
-            except etree.XMLSyntaxError as err:
+            except etree.XMLSyntaxError:
                 self.root = None
         if self.root is not None:
             self.xmlstr_pretty = etree.tostring(self.tree(), pretty_print=True).decode()
