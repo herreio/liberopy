@@ -8,6 +8,8 @@ import requests
 from .xmlparser import ServiceResponse, ItemDetails, TitleDetails,\
     OrderInformation, OrderLineInformation, OrderStatus
 
+from . import __version__
+
 
 class WebServices:
 
@@ -109,7 +111,7 @@ class ServicePackage:
 
     def get_request(self, url):
         try:
-            response = requests.get(url, headers={"User-Agent": "liberopy 2022.4.30"})
+            response = requests.get(url, headers={"User-Agent": "liberopy {0}".format(__version__)})
         except requests.exceptions.RequestException as e:
             self.logger.error(e.__class__.__name__)
             return None
