@@ -22,7 +22,7 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
 
 ### API Packages
 
-> These webservices are provided to be used by third parties to design and write their own applications based on the Libero platform. (SOAP Protocol)
+> These webservices are provided to be used by third parties to design and write their own applications based on the Libero platform. (SOAP Protocol, Rev. 39)
 
 ## Classes and Methods
 
