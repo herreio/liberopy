@@ -139,6 +139,9 @@ class TitleDetails(ServiceResponse):
     def get_author_display(self):
         return self.texts(["Author", "Authors", "AuthorDisplayForm"])
 
+    def get_corporate_author_display(self):
+        return self.texts(["CorporateAuthor", "CorporateAuthors", "CorporateAuthorDisplayForm"])
+
     def get_gmd_code(self):
         return self.text(["GMD", "Code"])
 
