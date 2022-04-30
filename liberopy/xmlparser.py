@@ -151,11 +151,20 @@ class TitleDetails(ServiceResponse):
     def get_subtitle(self):
         return self.text("SubTitle")
 
+    def get_subtitle_clean(self):
+        return self.clean_title(self.get_subtitle())
+
     def get_series(self):
         return self.text("Series")
 
-    def get_subtitle_clean(self):
-        return self.clean_title(self.get_subtitle())
+    def get_series_clean(self):
+        return self.clean_title(self.get_series())
+
+    def get_series_key_display(self):
+        return self.texts(["SeriesKey", "SeriesKeys", "SeriesKeyDisplayForm"])
+
+    def get_series_key_display_clean(self):
+        return [self.clean_title(t) for t in self.get_series_key_display()]
 
     def get_display_title(self):
         return self.text("DisplayTitle")
