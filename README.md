@@ -18,7 +18,7 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
 
 ## Platform
 
-- [Libero LMS](http://www.libero.com.au) (tested on 6.3.22)
+- [Libero LMS](https://libero.com.au) (tested on 6.3.22)
 
 ### API Packages
 
