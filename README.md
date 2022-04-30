@@ -16,19 +16,23 @@ pip install -e git+ssh://git@github.com/herreio/liberopy.git#egg=liberopy
 pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
 ```
 
-## Requirements
+## Platform
 
-- [Libero LMS](http://www.libero.com.au/) (tested on 6.3.22)
+- [Libero LMS](http://www.libero.com.au) (tested on 6.3.22)
+
+### API Packages
+
+> These webservices are provided to be used by third parties to design and write their own applications based on the Libero platform. (SOAP Protocol)
 
 ## Classes and Methods
 
 - Authenticate
     - Login
     - Logout
-- Catalogue Searcher
+- CatalogueSearcher
     - Catalogue (Type=newitem)
     - GetRsnByRID
-- Library API
+- LibraryAPI
     - GetTitleDetails
     - GetItemDetails
     - OrderStatus
