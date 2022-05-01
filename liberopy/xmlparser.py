@@ -103,6 +103,30 @@ class ServiceResponse:
                     return False
 
 
+class NewItems(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="CatalogueResponse")
+
+    def get_total(self):
+        num = self.text("Total")
+        if num is not None:
+            return int(num)
+
+    def _get_list(self):
+        items = []
+        for item in self.elems("searchResultItems"):
+            item_parsed = {}
+            for field in item:
+                tag = field.tag.replace("{http://libero.com.au}", "")
+                item_parsed[tag] = field.text
+            items.append(item_parsed)
+        return items
+
+    def get_list(self):
+        return self._get_list()
+
+
 class TitleDetails(ServiceResponse):
 
     def __init__(self, xmlstr):

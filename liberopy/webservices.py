@@ -6,7 +6,7 @@ import logging
 import requests
 
 from .xmlparser import ServiceResponse, ItemDetails, TitleDetails,\
-    OrderInformation, OrderLineInformation, OrderStatus
+    OrderInformation, OrderLineInformation, OrderStatus, NewItems
 
 from . import __version__
 
@@ -62,7 +62,9 @@ class WebServices:
     def newitems(self):
         if self.token is not None:
             return self.CatalogueSearcher.newitems()
-        self.logger.error("You have to log in first!")
+        else:
+            cs = CatalogueSearcher(self.base, self.token, loglevel=self.logger.level)
+            return cs.newitems()
 
     def itemdetails(self, barcode):
         if self.token is not None:
@@ -233,13 +235,13 @@ class CatalogueSearcher(ServicePackage):
 
     def newitems(self):
         url = self.url_newitems()
-        self.logger.info("Search titles with newitems in LIBERO.")
-        return self.soap_request(url)
+        self.logger.info("Search titles with new items in LIBERO.")
+        return self.soap_request(url, post=NewItems)
 
     def rid2rsn(self, rid):
         url = self.url_rid2rsn(rid)
         self.logger.info("Fetch RSN for title with RID {0}.".format(rid))
-        response = self.soap_request(url, post=ServiceResponse)
+        response = self.soap_request(url)
         if response is not None:
             return response.text("GetRsnByRIDResult")
 
@@ -249,8 +251,7 @@ class CatalogueSearcher(ServicePackage):
 
     def url_newitems(self):
         url = self.method_path("Catalogue")
-        url = self.add_type_to_url(url, "newitem")
-        return self.add_token_to_url(url, self.token)
+        return self.add_type_to_url(url, "newitem")
 
     def add_rid_to_url(self, url, rid):
         return self.add_param(url, "RID", rid)
