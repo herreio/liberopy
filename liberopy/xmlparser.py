@@ -121,6 +121,9 @@ class TitleDetails(ServiceResponse):
     def get_rsn(self):
         return self.text("RSN")
 
+    def get_rsn_main(self):
+        return self.text("MainRSN")
+
     def get_title(self):
         return self.text("Title")
 
@@ -148,6 +151,15 @@ class TitleDetails(ServiceResponse):
     def get_gmd_desc(self):
         return self.text(["GMD", "Description"])
 
+    def get_url(self):
+        return self.text(["GetTitleDetailsResult", "URL"])
+
+    def get_urls(self):
+        return self.texts(["URLs", "URL", "URL"])
+
+    def get_url_main(self):
+        return self.text("MainURL")
+
     def get_subtitle(self):
         return self.text("SubTitle")
 
@@ -165,6 +177,15 @@ class TitleDetails(ServiceResponse):
 
     def get_series_key_display_clean(self):
         return [self.clean_title(t) for t in self.get_series_key_display()]
+
+    def get_serial_rsns(self):
+        return self.texts(["SerialYear", "SerialYears", "RSN"])
+
+    def get_serial_years(self):
+        return self.texts(["SerialYear", "SerialYears", "YYYY"])
+
+    def get_frequency(self):
+        return self.text("Frequency")
 
     def get_display_title(self):
         return self.text("DisplayTitle")
