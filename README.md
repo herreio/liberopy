@@ -70,10 +70,18 @@ According to the company’s [website](https://libero.com.au/company/our-partner
 
 - [Bach-Archiv](https://bacharchiv.libero-is.de/libero/WebOpac.cls)
     - `https://bacharchiv.libero-is.de/libero`
+- [Cairns Regional Council - Libraries](https://lib.cairnslibrary.com.au/libero/WebOpac.cls)
+    - `https://lib.cairnslibrary.com.au/libero`
 - [Central Coast Council - Library Service](https://centralcoast.libero.com.au/libero/WebOpac.cls)
     - `https://centralcoast.libero.com.au/libero`
+- [Deutsche Bundesbank - Bibliothek](http://www.libit.de/bbkwo/WebOpac.cls)
+    - `http://www.libit.de/bbkwo`
+- [Hochschule Bochum](https://opac.hs-bochum.de/libero/WebOpac.cls)
+    - `https://opac.hs-bochum.de/libero`
 - [Kunsthaus Zürich](https://opac.kunsthaus.ch/libero/WebOpac.cls)
     - `https://opac.kunsthaus.ch/libero`
+- [Landesamt für Schule und Bildung Sachsen - Bibliothek](https://portal.smk.sachsen.de/sbal-webopac/libero/WebOpac.cls)
+    - `https://portal.smk.sachsen.de/sbal-webopac/libero`
 - [University of Mauritius - Library](https://library.uom.ac.mu/libero/WebOpac.cls)
     - `https://library.uom.ac.mu/libero`
 - [Saarländische Universitäts- und Landesbibliothek](https://opac.sulb.uni-saarland.de/libero/WebOpac.cls)
@@ -84,12 +92,15 @@ According to the company’s [website](https://libero.com.au/company/our-partner
     - `https://opac.saarbruecken.de/libero`
 - [Stadt- und Regionalbibliothek Cottbus](https://web-opac.bibliothek-cottbus.de/libero/WebOpac.cls)
     - `https://web-opac.bibliothek-cottbus.de/libero`
+- [Università Pontificia Salesiana - Biblioteca Don Bosco](https://webopacups.urbe.it/libero/WebOpac.cls)
+    - `https://webopacups.urbe.it/libero`
 - [Universität Konstanz - KIM](https://libero.ub.uni-konstanz.de/libero/WebOpac.cls)
     - `https://libero.ub.uni-konstanz.de/libero`
+- [Universitätsbibliothek Chemnitz](https://opac.bibliothek.tu-chemnitz.de/libero/WebOpac.cls)
+    - `https://opac.bibliothek.tu-chemnitz.de/libero`
 - [Universitätsbibliothek TU Bergakademie Freiberg](https://webopac.ub.tu-freiberg.de/libero/WebOpac.cls)
     - `https://webopac.ub.tu-freiberg.de/libero`
 - [Waverley Library](https://library.waverley.nsw.gov.au/libero/WebOpac.cls)
     - `https://library.waverley.nsw.gov.au/libero`
-- ...
 
 cf. https://www.google.com/search?q=libero+webopac
