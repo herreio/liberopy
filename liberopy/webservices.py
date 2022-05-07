@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 import atexit
 import logging
 import requests
@@ -274,22 +273,21 @@ class Authenticate(ServicePackage):
 
     def login(self, user, password):
         url = self.url_login(user, password)
-        response = self.get_request(url)
-        if response is not None and response.text is not None and self.extract_status(response.text) == 1:
-            return self.extract_token(response.text)
+        response = self.soap_request(url)
+        if response is not None and response.text("Status") == "1":
+            return response.text("Token")
 
     def patron_login(self, user, password):
         url = self.url_patron_login(user, password)
-        response = self.get_request(url)
-        if response is not None and response.text is not None and self.extract_status(response.text) == 1:
-            atexit.unregister(self.logout)
-            return self.extract_token(response.text)
+        response = self.soap_request(url)
+        if response is not None and response.text("Status") == "1":
+            return response.text("Token")
 
     def logout(self):
         if self.token:
             url = self.url_logout(self.token)
-            response = self.get_request(url)
-            if response is not None and response.text is not None and self.extract_status(response.text) == 1:
+            response = self.soap_request(url)
+            if response is not None and response.text("Status") == "1":
                 atexit.unregister(self.logout)
                 self.logger.info("Logout successful!")
 
@@ -306,13 +304,3 @@ class Authenticate(ServicePackage):
     def url_logout(self, token):
         url = self.method_path("Logout")
         return self.add_token_to_url(url, token)
-
-    @staticmethod
-    def extract_token(response):
-        found = re.search("<Token>(.+)</Token>", response)
-        return found.groups()[0] if found else None
-
-    @staticmethod
-    def extract_status(response):
-        found = re.search("<Status>(.+)</Status>", response)
-        return int(found.groups()[0]) if found else None
