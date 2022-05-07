@@ -78,6 +78,8 @@ According to the company’s [website](https://libero.com.au/company/our-partner
     - `http://www.libit.de/bbkwo`
 - [Hochschule Bochum](https://opac.hs-bochum.de/libero/WebOpac.cls)
     - `https://opac.hs-bochum.de/libero`
+- [Hochschule für Grafik und Buchkunst Leipzig](https://hgb.libero-is.de/libero/WebOpac.cls)
+    - `https://hgb.libero-is.de/libero`
 - [Kunsthaus Zürich](https://opac.kunsthaus.ch/libero/WebOpac.cls)
     - `https://opac.kunsthaus.ch/libero`
 - [Landesamt für Schule und Bildung Sachsen - Bibliothek](https://portal.smk.sachsen.de/sbal-webopac/libero/WebOpac.cls)
