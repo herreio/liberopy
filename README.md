@@ -63,3 +63,33 @@ orderlineinfo = libero.orderlineinfo("9", "1")
 # Retrieve the current order status
 orderstatus = libero.orderstatus("1", "1")
 ```
+
+## Public Instances
+
+According to the company’s [website](https://libero.com.au/company/our-partners/), the library management system has more than 450 users worldwide. Some examples of users can be found in the following list whose links point to the `WebOpac` class. Each link is followed by the base URL (`domain`) of the Libero instance which can be used to initialize a client.
+
+- [Bach-Archiv](https://bacharchiv.libero-is.de/libero/WebOpac.cls)
+    - `https://bacharchiv.libero-is.de/libero`
+- [Central Coast Council - Library Service](https://centralcoast.libero.com.au/libero/WebOpac.cls)
+    - `https://centralcoast.libero.com.au/libero`
+- [Kunsthaus Zürich](https://opac.kunsthaus.ch/libero/WebOpac.cls)
+    - `https://opac.kunsthaus.ch/libero`
+- [University of Mauritius - Library](https://library.uom.ac.mu/libero/WebOpac.cls)
+    - `https://library.uom.ac.mu/libero`
+- [Saarländische Universitäts- und Landesbibliothek](https://opac.sulb.uni-saarland.de/libero/WebOpac.cls)
+    - `https://opac.sulb.uni-saarland.de/libero`
+- [Stadtbibliothek Aachen](https://webopac.stadtbibliothek-aachen.de/libero/WebOpac.cls)
+    - `https://webopac.stadtbibliothek-aachen.de/libero`
+- [Stadtbibliothek Saarbrücken](https://opac.saarbruecken.de/libero/WebOpac.cls)
+    - `https://opac.saarbruecken.de/libero`
+- [Stadt- und Regionalbibliothek Cottbus](https://web-opac.bibliothek-cottbus.de/libero/WebOpac.cls)
+    - `https://web-opac.bibliothek-cottbus.de/libero`
+- [Universität Konstanz - KIM](https://libero.ub.uni-konstanz.de/libero/WebOpac.cls)
+    - `https://libero.ub.uni-konstanz.de/libero`
+- [Universitätsbibliothek TU Bergakademie Freiberg](https://webopac.ub.tu-freiberg.de/libero/WebOpac.cls)
+    - `https://webopac.ub.tu-freiberg.de/libero`
+- [Waverley Library](https://library.waverley.nsw.gov.au/libero/WebOpac.cls)
+    - `https://library.waverley.nsw.gov.au/libero`
+- ...
+
+cf. https://www.google.com/search?q=libero+webopac
