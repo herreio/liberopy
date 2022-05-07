@@ -18,9 +18,9 @@ class WebServices:
         self.token = None
         self.logger = None
         self.Authenticate = None
-        self.CatalogueSearcher = None
         self.LibraryAPI = None
         self._logger(loglevel)
+        self.CatalogueSearcher = CatalogueSearcher(self.base, loglevel=self.logger.level)
 
     def _logger(self, level):
         self.logger = logging.getLogger("liberopy.WebServices")
@@ -38,7 +38,6 @@ class WebServices:
         self.Authenticate = Authenticate(self.base, user, password, patron=patron, loglevel=self.logger.level)
         if self.Authenticate.token:
             self.token = self.Authenticate.token
-            self.CatalogueSearcher = CatalogueSearcher(self.base, self.token, loglevel=self.logger.level)
             self.LibraryAPI = LibraryAPI(self.base, self.token, loglevel=self.logger.level)
 
     def logout(self):
@@ -46,24 +45,15 @@ class WebServices:
             self.token = None
             self.Authenticate.logout()
             self.Authenticate = None
-            self.CatalogueSearcher = None
             self.LibraryAPI = None
             return
         self.logger.warning("You are not logged in!")
 
     def rid2rsn(self, rid):
-        if self.token is not None:
-            return self.CatalogueSearcher.rid2rsn(rid)
-        else:
-            cs = CatalogueSearcher(self.base, self.token, loglevel=self.logger.level)
-            return cs.rid2rsn(rid)
+        return self.CatalogueSearcher.rid2rsn(rid)
 
     def newitems(self):
-        if self.token is not None:
-            return self.CatalogueSearcher.newitems()
-        else:
-            cs = CatalogueSearcher(self.base, self.token, loglevel=self.logger.level)
-            return cs.newitems()
+        return self.CatalogueSearcher.newitems()
 
     def itemdetails(self, barcode):
         if self.token is not None:
@@ -228,9 +218,8 @@ class LibraryAPI(ServicePackage):
 
 class CatalogueSearcher(ServicePackage):
 
-    def __init__(self, base, token, loglevel=logging.DEBUG):
+    def __init__(self, base, loglevel=logging.DEBUG):
         super().__init__(base, "CatalogueSearcher", loglevel=loglevel)
-        self.token = token
 
     def newitems(self):
         url = self.url_newitems()
