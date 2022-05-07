@@ -33,10 +33,10 @@ class WebServices:
             self.logger.addHandler(stream)
             self.logger.setLevel(level)
 
-    def login(self, user, password):
+    def login(self, user, password, patron=False):
         if self.token is not None:
             self.logout()
-        self.Authenticate = Authenticate(self.base, user, password, loglevel=self.logger.level)
+        self.Authenticate = Authenticate(self.base, user, password, patron=patron, loglevel=self.logger.level)
         if self.Authenticate.token:
             self.token = self.Authenticate.token
             self.CatalogueSearcher = CatalogueSearcher(self.base, self.token, loglevel=self.logger.level)
@@ -259,9 +259,12 @@ class CatalogueSearcher(ServicePackage):
 
 class Authenticate(ServicePackage):
 
-    def __init__(self, base, user, password, loglevel=logging.DEBUG):
+    def __init__(self, base, user, password, patron=False, loglevel=logging.DEBUG):
         super().__init__(base, "Authenticate", loglevel=loglevel)
-        self.token = self.login(user, password)
+        if patron:
+            self.token = self.patron_login(user, password)
+        else:
+            self.token = self.login(user, password)
         if self.token is not None:
             self.logger.info("Login successful!")
             self.logger.info("Set logout at exit.")
@@ -272,18 +275,31 @@ class Authenticate(ServicePackage):
     def login(self, user, password):
         url = self.url_login(user, password)
         response = self.get_request(url)
-        if response is not None and response.text is not None:
+        if response is not None and response.text is not None and self.extract_status(response.text) == 1:
+            return self.extract_token(response.text)
+
+    def patron_login(self, user, password):
+        url = self.url_patron_login(user, password)
+        response = self.get_request(url)
+        if response is not None and response.text is not None and self.extract_status(response.text) == 1:
+            atexit.unregister(self.logout)
             return self.extract_token(response.text)
 
     def logout(self):
-        url = self.url_logout(self.token)
-        response = self.get_request(url)
-        if response is not None:
-            atexit.unregister(self.logout)
-            self.logger.info("Logout successful!")
+        if self.token:
+            url = self.url_logout(self.token)
+            response = self.get_request(url)
+            if response is not None and response.text is not None and self.extract_status(response.text) == 1:
+                atexit.unregister(self.logout)
+                self.logger.info("Logout successful!")
 
     def url_login(self, user, password):
         url = self.method_path("Login")
+        url = self.add_param(url, "Username", user)
+        return self.add_param(url, "Password", password)
+
+    def url_patron_login(self, user, password):
+        url = self.method_path("PatronLogin")
         url = self.add_param(url, "Username", user)
         return self.add_param(url, "Password", password)
 
@@ -295,3 +311,8 @@ class Authenticate(ServicePackage):
     def extract_token(response):
         found = re.search("<Token>(.+)</Token>", response)
         return found.groups()[0] if found else None
+
+    @staticmethod
+    def extract_status(response):
+        found = re.search("<Status>(.+)</Status>", response)
+        return int(found.groups()[0]) if found else None
