@@ -28,6 +28,7 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
 
 - Authenticate
     - Login
+    - PatronLogin
     - Logout
 - CatalogueSearcher
     - Catalogue (Type=newitem)
