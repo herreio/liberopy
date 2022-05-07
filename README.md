@@ -68,7 +68,7 @@ orderstatus = libero.orderstatus("1", "1")
 
 According to the company’s [website](https://libero.com.au/company/our-partners/), the library management system has more than 450 users worldwide. Some examples of users can be found in the following list whose links point to the `WebOpac` class. Each link is followed by the base URL (`domain`) of the Libero instance which can be used to initialize a client.
 
-- [Bach-Archiv](https://bacharchiv.libero-is.de/libero/WebOpac.cls)
+- [Bach Archiv Leipzig](https://bacharchiv.libero-is.de/libero/WebOpac.cls)
     - `https://bacharchiv.libero-is.de/libero`
 - [Cairns Regional Council - Libraries](https://lib.cairnslibrary.com.au/libero/WebOpac.cls)
     - `https://lib.cairnslibrary.com.au/libero`
@@ -82,8 +82,6 @@ According to the company’s [website](https://libero.com.au/company/our-partner
     - `https://hgb.libero-is.de/libero`
 - [Kunsthaus Zürich](https://opac.kunsthaus.ch/libero/WebOpac.cls)
     - `https://opac.kunsthaus.ch/libero`
-- [Landesamt für Schule und Bildung Sachsen - Bibliothek](https://portal.smk.sachsen.de/sbal-webopac/libero/WebOpac.cls)
-    - `https://portal.smk.sachsen.de/sbal-webopac/libero`
 - [University of Mauritius - Library](https://library.uom.ac.mu/libero/WebOpac.cls)
     - `https://library.uom.ac.mu/libero`
 - [Saarländische Universitäts- und Landesbibliothek](https://opac.sulb.uni-saarland.de/libero/WebOpac.cls)
