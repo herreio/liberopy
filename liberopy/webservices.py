@@ -124,9 +124,8 @@ class ServicePackage:
         return self.set_param(self.path, "wsdl", "1")
 
     def wsdl(self):
-        response = self.get_request(self.url_wsdl())
-        if response is not None:
-            return ServiceResponse(response.text)
+        url = self.url_wsdl()
+        return self.soap_request(url)
 
     def method_path(self, method):
         return self.set_param(self.path, "soap_method", method)
