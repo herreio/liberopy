@@ -262,13 +262,13 @@ class Authenticate(ServicePackage):
     def login(self, user, password):
         url = self.url_login(user, password)
         response = self.soap_request(url)
-        if response is not None and response.text("Status") == "1":
+        if response is not None and (response.text("Status") == "1" or response.text("Token")):
             return response.text("Token")
 
     def patron_login(self, user, password):
         url = self.url_patron_login(user, password)
         response = self.soap_request(url)
-        if response is not None and response.text("Status") == "1":
+        if response is not None and (response.text("Status") == "1" or response.text("Token")):
             return response.text("Token")
 
     def logout(self):
