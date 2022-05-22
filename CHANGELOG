@@ -1,3 +1,7 @@
+2022-05-23
+
+- clean ISSN in TitleDetails
+
 2022-05-11
 
 - fix login if token already exists
