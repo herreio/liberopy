@@ -135,9 +135,16 @@ class TitleDetails(ServiceResponse):
     @staticmethod
     def clean_title(title):
         title_clean = "[o.T.]"
-        if title is not None:
+        if isinstance(title, str):
             title_clean = title.replace("¬", "")
         return title_clean
+
+    @staticmethod
+    def clean_issn(issn):
+        issn_clean = None
+        if isinstance(issn, str):
+            issn_clean = issn.replace("ISSN ", "")
+        return issn_clean
 
     def get_rid(self):
         return self.text("RID")
@@ -254,7 +261,7 @@ class TitleDetails(ServiceResponse):
         return self.texts(["StockItems", "StockItems", "Barcode"])
 
     def get_issn(self):
-        return self.text("ISSN")
+        return self.clean_issn(self.text("ISSN"))
 
     def get_alternate_issn(self):
         return self.texts(["AlternateISSNs", "AlternateISSNs", "AlternateISSN"])
