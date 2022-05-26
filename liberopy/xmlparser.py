@@ -221,6 +221,15 @@ class TitleDetails(ServiceResponse):
     def get_frequency(self):
         return self.text("Frequency")
 
+    def get_acronym(self):
+        return self.text("Acronym")
+
+    def get_expiry_date(self):
+        return self.text("ExpiryDate")
+
+    def get_successor(self):
+        return self.text("ContinuedByTitle")
+
     def get_display_title(self):
         return self.text("DisplayTitle")
 
