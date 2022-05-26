@@ -302,6 +302,450 @@ class TitleDetails(ServiceResponse):
     def get_filing_indicator(self):
         return self.text("FilingIndicator")
 
+    def get_mab(self):
+        return self.elem("MAB")
+
+    def get_mab_xml(self):
+        mab_elems = self.get_mab()
+        if mab_elems is not None:
+            return TitleDetailsMab(etree.tostring(mab_elems).decode())
+
+    def get_mab_json(self):
+        mab_xml = self.get_mab_xml()
+        if mab_xml is not None:
+            return mab_xml.get_json()
+
+
+class TitleDetailsMab(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="MAB")
+        self.data = self._transform()
+
+    def _transform(self):
+        mab_data = {"_fields": {}}
+        tag_pattern = self.ns("Tag")
+        indicator_key_pattern = self.ns("IndicatorKey")
+        sequence_pattern = self.ns("Sequence")
+        subfield_pattern = self.ns("Subfield")
+        mab_data_plain_pattern = self.ns("MABDataPlain")
+        mab_elems = self.elems("MAB")
+        for mab_elem in mab_elems:
+            tag = mab_elem.find(tag_pattern).text
+            indicator_key = mab_elem.find(indicator_key_pattern).text
+            subfield = mab_elem.find(subfield_pattern).text
+            sequence = mab_elem.find(sequence_pattern).text
+            mab_data_plain = mab_elem.find(mab_data_plain_pattern)
+            if mab_data_plain is not None:
+                mab_data_plain = mab_data_plain.text
+            if tag not in mab_data["_fields"]:
+                mab_data["_fields"][tag] = []
+            tag_data = mab_data["_fields"][tag]
+            tag_data.append({
+              "indicator_key": indicator_key,
+              "subfield": subfield,
+              "sequence": int(sequence),
+              "value": mab_data_plain
+            })
+            mab_data["_fields"][tag] = tag_data
+            if tag == "###":
+                mab_data["_type"] = mab_data_plain[23]
+                mab_data["_status"] = mab_data_plain[5]
+                mab_data["_version"] = mab_data_plain[6:10]
+        return mab_data
+
+    def get_json(self):
+        return MabJson(self.data)
+
+
+class MabJson:
+    """
+    Die Entwicklung und Pflege von MAB (seit 1995 MAB2) ist 2006
+    abgeschlossen worden, das Format wurde »eingefroren«.
+
+    Vgl. https://format.gbv.de/mab
+    """
+
+    def __init__(self, data):
+        self.data = data
+
+    def get_type(self):
+        if isinstance(self.data, dict) and "_type" in self.data:
+            return self.data["_type"]
+
+    def get_status(self):
+        if isinstance(self.data, dict) and "_status" in self.data:
+            return self.data["_status"]
+
+    def get_version(self):
+        if isinstance(self.data, dict) and "_status" in self.data:
+            return self.data["_version"]
+
+    def get_fields(self):
+        if isinstance(self.data, dict) and "_fields" in self.data:
+            return self.data["_fields"]
+
+    def get_field_tags(self):
+        fields = self.get_fields()
+        if isinstance(fields, dict):
+            return list(fields.keys())
+
+    def get_field(self, name):
+        fields = self.get_fields()
+        if isinstance(fields, dict) and name in fields:
+            return fields[name]
+
+    def get_value(self, fname, sfname=None):
+        field = self.get_field(fname)
+        if isinstance(field, list):
+            for subfield in field:
+                if "subfield" in subfield:
+                    sftag = subfield["subfield"]
+                    if "value" in subfield:
+                        if sfname is None:
+                            return {"ind": sftag, "val": subfield["value"]}
+                        if sftag == sfname:
+                            return subfield["value"]
+
+    def get_values(self, fname, reduce=True):
+        field = self.get_field(fname)
+        if isinstance(field, list):
+            values = []
+            for subfield in field:
+                sf = {}
+                if "subfield" in subfield:
+                    sf["ind"] = subfield["subfield"]
+                if "value" in subfield:
+                    sf["val"] = subfield["value"]
+                values.append(sf)
+            if len(values) > 0:
+                if reduce and len(values) == 1:
+                    values = values[0]
+                return values
+
+    def get_ppn(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        001       IDENTIFIKATIONSNUMMER DES DATENSATZES
+
+          Indikator:
+          Blank = nicht definiert
+        """
+        return self.get_value("001")
+
+    def get_date_entered(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        002       DATUM DER ERSTERFASSUNG / FREMDDATENUEBERNAHME
+
+          Indikator:
+          a = Datum der Ersterfassung
+          b = Datum der Fremddatenuebernahme
+        """
+        return self.get_value("002")
+
+    def get_latest_trans(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        003       DATUM DER LETZTEN KORREKTUR
+
+          Indikator:
+          Blank = nicht definiert
+        """
+        return self.get_value("003")
+
+    def get_interational_ids(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        025       UEBERREGIONALE IDENTIFIKATIONSNUMMER
+
+          Indikator:
+          blank = nicht spezifiziert
+          a     = DDB
+          b     = BNB
+          c     = Casalini libri
+          e     = ekz
+          f     = BNF
+          g     = ZKA
+          l     = LoC
+          o     = OCLC
+          z     = ZDB
+        """
+        return self.get_values("025")
+
+    def get_zdb_id(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        025       UEBERREGIONALE IDENTIFIKATIONSNUMMER
+
+          Indikator:
+          z     = ZDB
+        """
+        return self.get_value("025", "z")
+
+    def get_regional_ids(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        026       REGIONALE IDENTIFIKATIONSNUMMER
+
+          Indikator:
+          blank = nicht spezifiziert
+          a     = Bibliotheksverbund Berlin-Brandenburg
+          b     = Norddeutscher Bibliotheksverbund (bis 1996)
+          c     = Bibliotheksverbund Niedersachsen/Sachsen-Anhalt
+                  (bis 1996)
+          d     = Nordrhein-Westfaelischer Bibliotheksverbund
+          e     = Hessisches Bibliotheksinformationssystem
+          f     = Suedwestdeutscher Bibliotheksverbund
+          g     = Bibliotheksverbund Bayern
+          h     = Gemeinsamer Bibliotheksverbund der Laender Bremen,
+                  Hamburg, Mecklenburg-Vorpommern, Niedersachsen,
+                  Sachsen-Anhalt, Schleswig-Holstein, Thueringen
+                  (ab 1996)
+        """
+        return self.get_values("026")
+
+    def get_kxp_id(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        026       REGIONALE IDENTIFIKATIONSNUMMER
+
+          Indikator:
+          k     = K10plus
+        """
+        return self.get_value("026", sfname="k")
+
+    def get_local_ids(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        027       LOKALE IDENTIFIKATIONSNUMMER
+
+          Indikator:
+          blank = nicht spezifiziert
+          a     = gepruefte Identifikationsnummer
+          b     = ungepruefte Identifikationsnummer
+        """
+        return self.get_values("027")
+
+    def get_other_ids(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        029       SONSTIGE IDENTIFIKATIONSNUMMER DES VORLIEGENDEN
+                  DATENSATZES
+
+          Indikator:
+          blank = nicht spezifiziert
+        """
+        return self.get_values("029")
+
+    def get_date_published(self):
+        """
+        400-437   SEGMENT VEROEFFENTLICHUNGSVERMERK, UMFANG, BEIGABEN
+
+        425       ERSCHEINUNGSJAHR(E)
+
+          Indikator:
+          blank = Erscheinungsjahr(e) in Vorlageform
+          a     = Erscheinungsjahr(e) in Ansetzungsform
+          b     = Erscheinungsjahr des ersten Bandes in Ansetzungsform
+          c     = Erscheinungsjahr des letzten Bandes in Ansetzungsform
+          p     = Publikationsdatum bei Tontraegern (P-Datum)
+        """
+        return self.get_values("425")
+
+    def get_parent_rid(self):
+        """
+        451-496   SEGMENT GESAMTTITELANGABEN
+
+        453       IDENTIFIKATIONSNUMMER DES 1. GESAMTTITELS
+
+          Indikator:
+          blank = nicht definiert
+          m     = mehrbaendiges begrenztes Werk
+          r     = Schriftenreihe oder anderes fortlaufendes
+                  Sammelwerk
+        """
+        return self.get_values("453")
+
+    def get_parent_title(self):
+        """
+        451-496   SEGMENT GESAMTTITELANGABEN
+
+        454       1. GESAMTTITEL IN ANSETZUNGSFORM
+
+          Indikator:
+          blank = nicht spezifiziert
+          a     = Verfasserwerk
+          b     = Urheberwerk
+          c     = Sachtitelwerk
+        """
+        return self.get_values("454")
+
+    def get_predecessor(self):
+        """
+        501-539   SEGMENT FUSSNOTEN
+
+        531       HINWEISE AUF FRUEHERE AUSGABEN UND BAENDE
+
+          Indikator:
+          blank = verbale Beschreibung
+          x     = reziproke Beziehung
+          y     = nicht reziproke Beziehung
+          z     = nicht differenzierte Beziehung
+        """
+        return self.get_values("531")
+
+    def get_parallel(self):
+        """
+        501-539   SEGMENT FUSSNOTEN
+
+        532       HINWEISE AUF FRUEHERE UND SPAETERE SOWIE ZEITWEISE
+                  GUELTIGE TITEL
+
+          Indikator:
+          blank = verbale Beschreibung
+          x     = reziproke Beziehung
+          y     = nicht reziproke Beziehung
+          z     = nicht differenzierte Beziehung
+        """
+        return self.get_values("532")
+
+    def get_successor(self):
+        """
+        501-539   SEGMENT FUSSNOTEN
+
+        533       HINWEISE AUF SPAETERE AUSGABEN UND BAENDE
+
+          Indikator:
+          blank = verbale Beschreibung
+          x     = reziproke Beziehung
+          y     = nicht reziproke Beziehung
+          z     = nicht differenzierte Beziehung
+        """
+        return self.get_values("533")
+
+    def get_isbn(self):
+        """
+        540-589   SEGMENT STANDARDNUMMERN
+
+        540       INTERNATIONALE STANDARDBUCHNUMMER (ISBN)
+
+          Indikator:
+          blank = ISBN formal nicht geprueft
+          a     = ISBN formal richtig
+          b     = ISBN formal falsch
+          z     = keine ISBN, aber Einbandart und/oder Preis
+        """
+        return self.get_values("540")
+
+    def get_ismn(self):
+        """
+        540-589   SEGMENT STANDARDNUMMERN
+
+        541       INTERNATIONALE STANDARDNUMMER FUER MUSIKALIEN (ISMN)
+
+          Indikator:
+          blank = ISMN formal nicht geprueft
+          a     = ISMN formal richtig
+          b     = ISMN formal falsch
+          z     = keine ISMN, aber Einbandart und/oder Preis
+        """
+        return self.get_values("541")
+
+    def get_issn(self):
+        """
+        540-589   SEGMENT STANDARDNUMMERN
+
+        542       INTERNATIONALE STANDARDNUMMER FUER FORTLAUFENDE
+                  SAMMELWERKE (ISSN)
+
+          Indikator:
+          blank = ISSN formal nicht geprueft
+          a     = ISSN formal richtig
+          b     = ISSN formal falsch
+          z     = keine ISSN, aber Einbandart und/oder Preis
+        """
+        return self.get_values("542")
+
+    def get_numbers(self):
+        """
+        540-589   SEGMENT STANDARDNUMMERN
+
+        551       VERLAGS-, PRODUKTIONS- UND BESTELLNUMMER VON MUSIKALIEN
+                  UND TONTRAEGERN
+
+          Indikator:
+          blank = nicht spezifiziert
+          a     = Verlags- und Firmenbestellnummer
+          b     = Druckplattennummer bei Musikalien
+          c     = Plattennummer
+          d     = Setnummer
+          e     = Produktionsnummer
+          f     = Kompaktkassettennummer
+        """
+        return self.get_values("551")
+
+    def get_article(self):
+        """
+        540-589   SEGMENT STANDARDNUMMERN
+
+        553       ARTIKELNUMMER
+
+          Indikator:
+          blank = nicht spezifiziert
+          a     = Internationale Artikelnummer (EAN)
+          b     = Universal Product Code (UPC)
+        """
+        return self.get_values("553")
+
+    def get_ean(self):
+        """
+        540-589   SEGMENT STANDARDNUMMERN
+
+        553       ARTIKELNUMMER
+
+          Indikator:
+          a     = Internationale Artikelnummer (EAN)
+        """
+        return self.get_value("553", "a")
+
+    def get_upc(self):
+        """
+        540-589   SEGMENT STANDARDNUMMERN
+
+        553       ARTIKELNUMMER
+
+          Indikator:
+          b     = Universal Product Code (UPC)
+        """
+        return self.get_value("553", "b")
+
+    def get_statistics_code(self):
+        """
+        9XX RSWK-Schlagwortketten
+
+        997       DBS-FACHGRUPPE MIT UNTERGRUPPE
+        """
+        return [t["val"] for t in self.get_values("997")]
+
 
 class ItemDetails(ServiceResponse):
 

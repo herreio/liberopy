@@ -65,6 +65,11 @@ class WebServices:
             return self.LibraryAPI.titledetails(rsn)
         self.logger.error("You have to log in first!")
 
+    def titlemab(self, rsn):
+        details = self.titledetails(rsn)
+        if details is not None:
+            return details.get_mab_json()
+
     def orderstatus(self, on, ln):
         if self.token is not None:
             return self.LibraryAPI.orderstatus(on, ln)
