@@ -378,7 +378,7 @@ class MabJson:
             return self.data["_status"]
 
     def get_version(self):
-        if isinstance(self.data, dict) and "_status" in self.data:
+        if isinstance(self.data, dict) and "_version" in self.data:
             return self.data["_version"]
 
     def get_fields(self):
