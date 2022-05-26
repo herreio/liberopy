@@ -164,6 +164,9 @@ class TitleDetails(ServiceResponse):
     def get_mabtitle(self):
         return self.text("MABTitle")
 
+    def get_mabtype(self):
+        return self.text("MABType")
+
     def get_main_author(self):
         return self.text("MainAuthor")
 
@@ -227,8 +230,14 @@ class TitleDetails(ServiceResponse):
     def get_created_date(self):
         return self.text("CreatedDate")
 
+    def get_oai_date(self):
+        return self.text("OAIDate")
+
     def get_raw_created_date(self):
         return self.text("RawCreatedDate")
+
+    def get_raw_created_datetime(self):
+        return self.text("RawCreatedDateTime")
 
     def get_last_saved_date(self):
         return self.text("LastSavedDate")
@@ -277,6 +286,12 @@ class TitleDetails(ServiceResponse):
 
     def get_classifications(self):
         return self.texts(["Classification", "Classifications", "Classification"])
+
+    def get_cataloguing_level(self):
+        return self.text("CataloguingLevel")
+
+    def get_filing_indicator(self):
+        return self.text("FilingIndicator")
 
 
 class ItemDetails(ServiceResponse):
