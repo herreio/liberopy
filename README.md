@@ -68,7 +68,7 @@ newlist = libero.newitems()
 # Get RSN of title from the provided RID
 rsn = libero.rid2rsn("123456")
 # Get barcodes of items from the provided RID
-bc = libero.rid2bc("123456")
+bcs = libero.rid2bc("123456")
 # Log in before using methods of LibraryAPI
 libero.login("GuestUser", "GuestPassword")
 # Retrieve title details via RSN
