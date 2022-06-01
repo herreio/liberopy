@@ -1,3 +1,12 @@
+2022-06-01
+
+- add ServicePackage OnlineCatalogue
+- add CatalogueSearcher methods title and search
+- add ServiceResponse classes Item, Title, ResultItems, Search, MabBlock and MarcBlock
+- add WebServices methods item, title, search, rid2bc, mabblock, marcblock, mabplain, marcplain
+- add parameter db to WebServices and ServicePackage CatalogueSearcher
+- rename ServiceResponse class NewItems to Catalogue and let it inherit from ResultItems
+
 2022-05-29
 
 - fix check if key exists
