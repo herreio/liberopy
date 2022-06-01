@@ -88,7 +88,7 @@ orderstatus = libero.orderstatus("1", "1")
 
 ## Public Instances
 
-According to the company’s [website](https://libero.com.au/company/our-partners/), the library management system has more than 450 users worldwide. Some examples of users can be found in the following list whose links point to the `WebOpac` class. Each link is followed by the base URL (`domain`) of the Libero instance which can be used to initialize a client.
+According to the company’s [website](https://libero.com.au/company/our-partners/), the library management system Libero has more than 450 users worldwide. Some examples of users can be found in the following list whose links point to the `WebOpac` class. Each link is followed by the base URL (`domain`) of the instance which can be used to initialize a client.
 
 - [Bach Archiv Leipzig](https://bacharchiv.libero-is.de/libero/WebOpac.cls)
     - `https://bacharchiv.libero-is.de/libero`
