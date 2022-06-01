@@ -4,23 +4,23 @@ import atexit
 import logging
 import requests
 
-from .xmlparser import ServiceResponse, ItemDetails, TitleDetails,\
-    OrderInformation, OrderLineInformation, OrderStatus, NewItems
-
-from . import __version__
+from . import __version__, xmlparser
 
 
 class WebServices:
 
-    def __init__(self, domain, loglevel=logging.DEBUG):
+    def __init__(self, domain, db="ACM", loglevel=logging.DEBUG):
         self.domain = domain
         self.base = "{0}/LiberoWebServices".format(self.domain)
+        self.base_ocsl = "{0}/services.catalogue".format(self.domain)
+        self.db = db
         self.token = None
         self.logger = None
         self.Authenticate = None
         self.LibraryAPI = None
         self._logger(loglevel)
-        self.CatalogueSearcher = CatalogueSearcher(self.base, loglevel=self.logger.level)
+        self.CatalogueSearcher = CatalogueSearcher(self.base, self.db, loglevel=self.logger.level)
+        self.OnlineCatalogue = OnlineCatalogue(self.base_ocsl, self.db, loglevel=self.logger.level)
 
     def _logger(self, level):
         self.logger = logging.getLogger("liberopy.WebServices")
@@ -49,11 +49,36 @@ class WebServices:
             return
         self.logger.warning("You are not logged in!")
 
-    def rid2rsn(self, rid):
-        return self.CatalogueSearcher.rid2rsn(rid)
+    def search(self, term, use="ku"):
+        """See CatalogueSearcher.search for list of values for use"""
+        return self.CatalogueSearcher.search(term, use=use)
+
+    def title(self, rsn):
+        return self.CatalogueSearcher.title(rsn)
 
     def newitems(self):
         return self.CatalogueSearcher.newitems()
+
+    def rid2rsn(self, rid):
+        return self.CatalogueSearcher.rid2rsn(rid)
+
+    def rid2bc(self, rid):
+        return self.OnlineCatalogue.rid2bc(rid)
+
+    def item(self, barcode):
+        return self.OnlineCatalogue.item(barcode)
+
+    def mabblock(self, rid):
+        return self.OnlineCatalogue.mab_block(rid)
+
+    def mabplain(self, rid):
+        return self.OnlineCatalogue.mab_plain(rid)
+
+    def marcblock(self, rid):
+        return self.OnlineCatalogue.marc_block(rid)
+
+    def marcplain(self, rid):
+        return self.OnlineCatalogue.marc_block(rid)
 
     def itemdetails(self, barcode):
         if self.token is not None:
@@ -112,11 +137,12 @@ class ServicePackage:
             self.logger.error(e.__class__.__name__)
             return None
         if response.status_code != 200:
+            self.logger.error("HTTP request to {0} failed!".format(url))
             self.logger.error("HTTP {0}".format(response.status_code))
             return None
         return response
 
-    def soap_request(self, url, post=ServiceResponse):
+    def soap_request(self, url, post=xmlparser.ServiceResponse):
         response = self.get_request(url)
         if response is not None:
             return post(response.text)
@@ -155,27 +181,27 @@ class LibraryAPI(ServicePackage):
     def titledetails(self, rsn):
         url = self.url_titledetails(rsn)
         self.logger.info("Fetch title with RSN {0}.".format(rsn))
-        return self.soap_request(url, post=TitleDetails)
+        return self.soap_request(url, post=xmlparser.TitleDetails)
 
     def itemdetails(self, barcode):
         url = self.url_itemdetails(barcode)
         self.logger.info("Fetch item with barcode {0}.".format(barcode))
-        return self.soap_request(url, post=ItemDetails)
+        return self.soap_request(url, post=xmlparser.ItemDetails)
 
     def orderstatus(self, on, ln):
         url = self.url_orderstatus(on, ln)
         self.logger.info("Fetch status of order line {0}/{1}.".format(on, ln))
-        return self.soap_request(url, post=OrderStatus)
+        return self.soap_request(url, post=xmlparser.OrderStatus)
 
     def orderinfo(self, on):
         url = self.url_orderinfo(on)
         self.logger.info("Fetch order {0}.".format(on))
-        return self.soap_request(url, post=OrderInformation)
+        return self.soap_request(url, post=xmlparser.OrderInformation)
 
     def orderlineinfo(self, on, ln):
         url = self.url_orderlineinfo(on, ln)
         self.logger.info("Fetch order line {0}/{1}.".format(on, ln))
-        return self.soap_request(url, post=OrderLineInformation)
+        return self.soap_request(url, post=xmlparser.OrderLineInformation)
 
     def url_itemdetails(self, barcode):
         url = self.method_path("GetItemDetails")
@@ -222,13 +248,47 @@ class LibraryAPI(ServicePackage):
 
 class CatalogueSearcher(ServicePackage):
 
-    def __init__(self, base, loglevel=logging.DEBUG):
+    def __init__(self, base, db, loglevel=logging.DEBUG):
         super().__init__(base, "CatalogueSearcher", loglevel=loglevel)
+        self.db = db
 
     def newitems(self):
         url = self.url_newitems()
-        self.logger.info("Search titles with new items in LIBERO.")
-        return self.soap_request(url, post=NewItems)
+        self.logger.info("Search titles with new items.")
+        return self.soap_request(url, post=xmlparser.Catalogue)
+
+    def search(self, term, use="ku"):
+        """Possible values for use:
+            a  - barcode
+            ke - Combined Author
+            ac - Serials Acronym
+            kj - Limited Subject
+            cl - Classification
+            kn - Notes
+            d  - Call Number
+            ks - Extended Subject
+            i  - ISBN
+            ku - Anyword
+            im - ISMN
+            kx - Sounds Like
+            is - ISSN
+            sk - Subjects
+            k  - Titles
+            sr - Series
+            kb - Author
+            ud - UDN
+            kc - Corporate Author
+            ut - Uniform title
+        """
+        url = self.url_search(term, use, self.db)
+        self.logger.info("Search for items by term {0} ({1}) in database {2}.".format(term, use, self.db))
+        return self.soap_request(url, post=xmlparser.Search)
+
+    def title(self, rsn):
+        """depracted"""
+        url = self.url_title(rsn, self.db)
+        self.logger.info("Fetch title with RSN {0}.".format(rsn))
+        return self.soap_request(url, post=xmlparser.Title)
 
     def rid2rsn(self, rid):
         url = self.url_rid2rsn(rid)
@@ -237,16 +297,24 @@ class CatalogueSearcher(ServicePackage):
         if response is not None:
             return response.text("GetRsnByRIDResult")
 
+    def url_search(self, term, use, db):
+        url = self.method_path("Search")
+        url = self.add_param(url, "term", term)
+        url = self.add_param(url, "use", use)
+        return self.add_param(url, "LiberoCode", db)
+
     def url_rid2rsn(self, rid):
         url = self.method_path("GetRsnByRID")
-        return self.add_rid_to_url(url, rid)
+        return self.add_param(url, "RID", rid)
+
+    def url_title(self, rsn, db):
+        url = self.method_path("GetTitle")
+        url = self.add_param(url, "rsn", rsn)
+        return self.add_param(url, "LiberoCode", db)
 
     def url_newitems(self):
         url = self.method_path("Catalogue")
         return self.add_type_to_url(url, "newitem")
-
-    def add_rid_to_url(self, url, rid):
-        return self.add_param(url, "RID", rid)
 
 
 class Authenticate(ServicePackage):
@@ -297,3 +365,94 @@ class Authenticate(ServicePackage):
     def url_logout(self, token):
         url = self.method_path("Logout")
         return self.add_token_to_url(url, token)
+
+
+class OnlineCatalogue(ServicePackage):
+
+    def __init__(self, base, db, loglevel=logging.DEBUG):
+        super().__init__(base, "OnlineCatalogue", loglevel=loglevel)
+        self.db = db
+
+    def item(self, barcode):
+        url = self.url_item(barcode, self.db)
+        self.logger.info("Fetch item with barcode {0}.".format(barcode))
+        return self.soap_request(url, post=xmlparser.Item)
+
+    def mab_block(self, rid):
+        url = self.url_mab_block(rid, self.db)
+        self.logger.info("Fetch MAB data of title with RID {0}.".format(rid))
+        response = self.soap_request(url, post=xmlparser.MabBlock)
+        if response is not None:
+            return response.text("GetMABBlockResult")
+
+    def mab_plain(self, rid):
+        mab_block = self.mab_block(rid)
+        if isinstance(mab_block, str):
+            mab_block = mab_block[:24] + "\n" + mab_block[24:]
+            mab_block = mab_block.replace("&#x1D;", "")
+            mab_block = mab_block.replace("&#x1E;", "\n")
+            return mab_block.strip("\n")
+
+    def marc_block(self, rid):
+        url = self.url_marc_block(rid, self.db)
+        self.logger.info("Fetch MARC data of title with RID {0}.".format(rid))
+        response = self.soap_request(url, post=xmlparser.MarcBlock)
+        if response is not None:
+            return response.text("GetMARCBlockResult")
+
+    def marc_plain(self, rid):
+        marc_block = self.marc_block(rid)
+        if isinstance(marc_block, str):
+            marc_block = marc_block.replace("&#x1D;", "")
+            marc_block = marc_block.replace("&#x1E;", "\n")
+            marc_block = marc_block.replace("&#x1F;", "\n")
+            return marc_block.strip("\n")
+
+    def rid2bc(self, rid):
+        url = self.url_rid2bc(rid, self.db)
+        result = self.soap_request(url)
+        if result is not None:
+            barcodes = result.texts("BarcodeList")
+            if isinstance(barcodes, list):
+                if len(barcodes) > 0:
+                    return barcodes
+
+    def rid2rsn(self, rid):
+        url = self.url_rid2rsn(rid, self.db)
+        result = self.soap_request(url)
+        if result is not None:
+            return result.text("GetRsnByRIDResult")
+
+    def url_item(self, barcode, db):
+        url = self.method_path("GetItemByBarcode")
+        url = self.add_barcode_to_url(url, barcode)
+        return self.add_db_to_url(url, db)
+
+    def url_rid2bc(self, rid, db):
+        url = self.method_path("GetALLItemsByRID")
+        url = self.add_rid_to_url(url, rid)
+        return self.add_db_to_url(url, db)
+
+    def url_rid2rsn(self, rid, db):
+        url = self.method_path("GetRsnByRID")
+        url = self.add_rid_to_url(url, rid)
+        return self.add_db_to_url(url, db)
+
+    def url_mab_block(self, rid, db):
+        url = self.method_path("GetMABBlock")
+        url = self.add_rid_to_url(url, rid)
+        return self.add_db_to_url(url, db)
+
+    def url_marc_block(self, rid, db):
+        url = self.method_path("GetMARCBlock")
+        url = self.add_rid_to_url(url, rid)
+        return self.add_db_to_url(url, db)
+
+    def add_barcode_to_url(self, url, barcode):
+        return self.add_param(url, "barcode", barcode)
+
+    def add_rid_to_url(self, url, rid):
+        return self.add_param(url, "rid", rid)
+
+    def add_db_to_url(self, url, db):
+        return self.add_param(url, "dbName", db)

@@ -32,6 +32,8 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
     - Logout
 - CatalogueSearcher
     - Catalogue (Type=newitem)
+    - Search
+    - GetTitle
     - GetRsnByRID
 - LibraryAPI
     - GetTitleDetails
@@ -39,23 +41,40 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
     - OrderStatus
     - OrderInformation
     - OrderLineInformation
+- OnlineCatalogue
+    - GetItemByBarcode
+    - GetALLItemsByRID
+    - GetMABBlock
+    - GetMARCBlock
 
 ## Usage Example
 
 ```py
 import liberopy
 # Initialize client instance
-libero = liberopy.WebServices("http://www.library.ACME.gov/libero")
-# Log in by passing username and password
-libero.login("GuestUser", "GuestPassword")
+libero = liberopy.WebServices("http://www.library.ACME.gov/libero", db="ACM")
+# Retrieve items via barcode
+item = libero.item("123456")
 # Retrieve titles via RSN
-title = libero.titledetails("123456")
-# Retrieve items via Barcode
-item = libero.itemdetails("123456")
+title = libero.title("123456")
+# Search for items by given term
+result = libero.search("Harry Potter")
+# Retrieve MAB data of titles via RID
+mab = libero.mabblock("123456")
+# Retrieve MARC data of titles via RID
+mab = libero.marcblock("123456")
 # Retrieve list of titles with new items
 newlist = libero.newitems()
 # Get RSN of title from the provided RID
 rsn = libero.rid2rsn("123456")
+# Get barcodes of items from the provided RID
+rsn = libero.rid2bc("123456")
+# Log in before using methods of LibraryAPI
+libero.login("GuestUser", "GuestPassword")
+# Retrieve title details via RSN
+title = libero.titledetails("123456")
+# Retrieve item details via barcode
+item = libero.itemdetails("123456")
 # Retrieve header information for an order
 orderinfo = libero.orderinfo("725")
 # Retrieve the order’s line number information

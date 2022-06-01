@@ -103,10 +103,28 @@ class ServiceResponse:
                     return False
 
 
-class NewItems(ServiceResponse):
+class Title(ServiceResponse):
 
     def __init__(self, xmlstr):
-        super().__init__(xmlstr, tagname="CatalogueResponse")
+        super().__init__(xmlstr, tagname="GetTitleResponse")
+
+    def get_rsn(self):
+        return self.text("rsn")
+
+    def get_author(self):
+        return self.text("author")
+
+    def get_title(self):
+        return self.text("title")
+
+    def get_publication(self):
+        return self.text("publication")
+
+
+class ResultItems(ServiceResponse):
+
+    def __init__(self, xmlstr, tagname):
+        super().__init__(xmlstr, tagname=tagname)
 
     def get_total(self):
         num = self.text("Total")
@@ -125,6 +143,18 @@ class NewItems(ServiceResponse):
 
     def get_list(self):
         return self._get_list()
+
+
+class Search(ResultItems):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, "SearchResponse")
+
+
+class Catalogue(ResultItems):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, "CatalogueResponse")
 
 
 class TitleDetails(ServiceResponse):
@@ -1057,3 +1087,27 @@ class OrderLineInformation(ServiceResponse):
 
     def get_dispatch_code(self):
         return self.text("DispatchCode")
+
+
+class Item(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="GetItemByBarcodeResponse")
+
+    def get_rsn(self):
+        return self.text("RSN")
+
+    def get_rid(self):
+        return self.text("RID")
+
+
+class MabBlock(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="GetMABBlockResponse")
+
+
+class MarcBlock(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="GetMARCBlockResponse")
