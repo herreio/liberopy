@@ -1,3 +1,8 @@
+2022-06-02
+
+- add WebServices method search_count
+- add CatalogueSearcher method search_count
+
 2022-06-01
 
 - add ServicePackage OnlineCatalogue
