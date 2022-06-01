@@ -33,6 +33,7 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
 - CatalogueSearcher
     - Catalogue (Type=newitem)
     - Search
+    - SearchCount
     - GetTitle
     - GetRsnByRID
 - LibraryAPI
@@ -59,6 +60,8 @@ item = libero.item("123456")
 title = libero.title("123456")
 # Search for items by given term
 result = libero.search("Harry Potter")
+# Result count for given search term
+result_count = libero.search_count("Harry Potter")
 # Retrieve MAB data of titles via RID
 mab = libero.mabblock("123456")
 # Retrieve MARC data of titles via RID

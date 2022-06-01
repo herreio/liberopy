@@ -50,8 +50,12 @@ class WebServices:
         self.logger.warning("You are not logged in!")
 
     def search(self, term, use="ku"):
-        """See CatalogueSearcher.search for list of values for use"""
+        """See CatalogueSearcher.search for list of possible values for use"""
         return self.CatalogueSearcher.search(term, use=use)
+
+    def search_count(self, term, use="ku"):
+        """See CatalogueSearcher.search for list of possible values for use"""
+        return self.CatalogueSearcher.search_count(term, use=use)
 
     def title(self, rsn):
         return self.CatalogueSearcher.title(rsn)
@@ -284,6 +288,15 @@ class CatalogueSearcher(ServicePackage):
         self.logger.info("Search for items by term {0} ({1}) in database {2}.".format(term, use, self.db))
         return self.soap_request(url, post=xmlparser.Search)
 
+    def search_count(self, term, use="ku"):
+        """See search method for list of possible values for use"""
+        url = self.url_search_count(term, use, self.db)
+        self.logger.info("Search for items by term {0} ({1}) in database {2}.".format(term, use, self.db))
+        result = self.soap_request(url)
+        if result is not None:
+            result_count = result.text("SearchCountResult")
+            return int(result_count) if result_count else 0
+
     def title(self, rsn):
         """depracted"""
         url = self.url_title(rsn, self.db)
@@ -299,6 +312,12 @@ class CatalogueSearcher(ServicePackage):
 
     def url_search(self, term, use, db):
         url = self.method_path("Search")
+        url = self.add_param(url, "term", term)
+        url = self.add_param(url, "use", use)
+        return self.add_param(url, "LiberoCode", db)
+
+    def url_search_count(self, term, use, db):
+        url = self.method_path("SearchCount")
         url = self.add_param(url, "term", term)
         url = self.add_param(url, "use", use)
         return self.add_param(url, "LiberoCode", db)
