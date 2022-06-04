@@ -4,7 +4,7 @@ This Python package provides a Libero Web Services SOAP API client.
 
 ## Setup
 
-Depending on your preferred installation scope, you may need to use `sudo` or pip’s `--user` flag when running the following setup commands. However, it is recommended to use a virtual environment that does not require either.
+Depending on your preferred installation scope, you may need to use `sudo` or pip’s `--user` flag when running the following setup commands. However, it is recommended to use a virtual environment that does not require either:
 
 ```sh
 python3 -m venv env
@@ -17,7 +17,7 @@ python3 -m venv env
 pip install -e git+ssh://git@github.com/herreio/liberopy.git#egg=liberopy
 ```
 
-### ... via HTTPS
+### ... or via HTTPS
 
 ```sh
 pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
