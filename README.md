@@ -41,7 +41,7 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
     - Catalogue (Type=newitem)
     - Search
     - SearchCount
-    - GetTitle
+    - GetTitle (deprecated)
     - GetRsnByRID
 - LibraryAPI
     - GetTitleDetails

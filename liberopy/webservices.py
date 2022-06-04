@@ -298,7 +298,7 @@ class CatalogueSearcher(ServicePackage):
             return int(result_count) if result_count else 0
 
     def title(self, rsn):
-        """depracted"""
+        """deprecated"""
         url = self.url_title(rsn, self.db)
         self.logger.info("Fetch title with RSN {0}.".format(rsn))
         return self.soap_request(url, post=xmlparser.Title)
