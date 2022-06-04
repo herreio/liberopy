@@ -82,9 +82,9 @@ bcs = libero.rid2bc("123456")
 # Log in before using methods of LibraryAPI
 libero.login("GuestUser", "GuestPassword")
 # Retrieve title details via RSN
-title = libero.titledetails("123456")
+titledetails = libero.titledetails("123456")
 # Retrieve item details via barcode
-item = libero.itemdetails("123456")
+itemdetails = libero.itemdetails("123456")
 # Retrieve header information for an order
 orderinfo = libero.orderinfo("725")
 # Retrieve the order’s line number information
