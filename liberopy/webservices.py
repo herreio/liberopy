@@ -58,6 +58,7 @@ class WebServices:
         return self.CatalogueSearcher.search_count(term, use=use)
 
     def title(self, rsn):
+        """Deprecated"""
         return self.CatalogueSearcher.title(rsn)
 
     def newitems(self):
@@ -298,7 +299,7 @@ class CatalogueSearcher(ServicePackage):
             return int(result_count) if result_count else 0
 
     def title(self, rsn):
-        """deprecated"""
+        """Deprecated"""
         url = self.url_title(rsn, self.db)
         self.logger.info("Fetch title with RSN {0}.".format(rsn))
         return self.soap_request(url, post=xmlparser.Title)
