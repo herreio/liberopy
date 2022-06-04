@@ -411,16 +411,20 @@ class TitleDetailsMab(ServiceResponse):
         self.data = self._transform()
 
     def _transform(self):
-        mab_data = {"_fields": {}}
+        mab_data = {
+            "_id": None,
+            "_type": None,
+            "_status": None,
+            "_version": None,
+            "_fields": {}
+        }
         tag_pattern = self.ns("Tag")
-        indicator_key_pattern = self.ns("IndicatorKey")
         sequence_pattern = self.ns("Sequence")
         subfield_pattern = self.ns("Subfield")
         mab_data_plain_pattern = self.ns("MABDataPlain")
         mab_elems = self.elems("MAB")
         for mab_elem in mab_elems:
             tag = mab_elem.find(tag_pattern).text
-            indicator_key = mab_elem.find(indicator_key_pattern).text
             subfield = mab_elem.find(subfield_pattern).text
             sequence = mab_elem.find(sequence_pattern).text
             mab_data_plain = mab_elem.find(mab_data_plain_pattern)
@@ -430,8 +434,7 @@ class TitleDetailsMab(ServiceResponse):
                 mab_data["_fields"][tag] = []
             tag_data = mab_data["_fields"][tag]
             tag_data.append({
-              "indicator_key": indicator_key,
-              "subfield": subfield,
+              "indicator": subfield,
               "sequence": int(sequence),
               "value": mab_data_plain
             })
@@ -440,6 +443,8 @@ class TitleDetailsMab(ServiceResponse):
                 mab_data["_type"] = mab_data_plain[23]
                 mab_data["_status"] = mab_data_plain[5]
                 mab_data["_version"] = mab_data_plain[6:10]
+            elif tag == "001":
+                mab_data["_id"] = mab_data_plain
         return mab_data
 
     def get_json(self):
@@ -456,6 +461,10 @@ class MabJson:
 
     def __init__(self, data):
         self.data = data
+
+    def get_id(self):
+        if isinstance(self.data, dict) and "_id" in self.data:
+            return self.data["_id"]
 
     def get_type(self):
         if isinstance(self.data, dict) and "_type" in self.data:
@@ -483,16 +492,16 @@ class MabJson:
         if isinstance(fields, dict) and name in fields:
             return fields[name]
 
-    def get_value(self, fname, sfname=None):
+    def get_value(self, fname, find=None):
         field = self.get_field(fname)
         if isinstance(field, list):
             for subfield in field:
-                if "subfield" in subfield:
-                    sftag = subfield["subfield"]
+                if "indicator" in subfield:
+                    ind = subfield["indicator"]
                     if "value" in subfield:
-                        if sfname is None:
-                            return {"ind": sftag, "val": subfield["value"]}
-                        if sftag == sfname:
+                        if find is None:
+                            return {"ind": ind, "val": subfield["value"]}
+                        if ind == find:
                             return subfield["value"]
 
     def get_values(self, fname, reduce=True):
@@ -501,8 +510,8 @@ class MabJson:
             values = []
             for subfield in field:
                 sf = {}
-                if "subfield" in subfield:
-                    sf["ind"] = subfield["subfield"]
+                if "indicator" in subfield:
+                    sf["ind"] = subfield["indicator"]
                 if "value" in subfield:
                     sf["val"] = subfield["value"]
                 values.append(sf)
