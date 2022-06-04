@@ -728,7 +728,7 @@ class MabJson:
           Indikator:
           f     = Suedwestdeutscher Bibliotheksverbund
         """
-        return self.get_value("026", sfname="f")
+        return self.get_value("026", "f")
 
     def get_kxp_id(self):
         """
@@ -740,7 +740,7 @@ class MabJson:
           Indikator:
           k     = K10plus
         """
-        return self.get_value("026", sfname="k")
+        return self.get_value("026", "k")
 
     def get_local_ids(self):
         """
