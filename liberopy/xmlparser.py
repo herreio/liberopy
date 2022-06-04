@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import dateutil.parser
 from lxml import etree
 
@@ -545,6 +546,44 @@ class MabJson:
         """
         return self.get_value("002")
 
+    def get_date_entered_type(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        002       DATUM DER ERSTERFASSUNG / FREMDDATENUEBERNAHME
+
+          Indikator:
+          a = Datum der Ersterfassung
+          b = Datum der Fremddatenuebernahme
+        """
+        return self.get_date_entered()["ind"]
+
+    def get_date_entered_date(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        002       DATUM DER ERSTERFASSUNG / FREMDDATENUEBERNAHME
+        """
+        date_entered = self.get_date_entered()["val"]
+        if date_entered is not None and len(date_entered.strip()) == 8:
+            try:
+                return datetime.datetime.strptime(date_entered, "%Y%m%d").date()
+            except ValueError:
+                pass
+
+    def get_date_entered_iso(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        002       DATUM DER ERSTERFASSUNG / FREMDDATENUEBERNAHME
+        """
+        date_entered = self.get_date_entered_date()
+        if date_entered is not None:
+            return date_entered.isoformat()
+
     def get_latest_trans(self):
         """
         001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
@@ -555,7 +594,32 @@ class MabJson:
           Indikator:
           Blank = nicht definiert
         """
-        return self.get_value("003")
+        return self.get_value("003", " ")
+
+    def get_latest_trans_datetime(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        003       DATUM DER LETZTEN KORREKTUR
+        """
+        latest_trans = self.get_latest_trans()
+        if latest_trans is not None:
+            try:
+                return datetime.datetime.strptime(latest_trans, "%Y%m%d%H%M%S")
+            except ValueError:
+                pass
+
+    def get_latest_trans_iso(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        003       DATUM DER LETZTEN KORREKTUR
+        """
+        latest_trans = self.get_latest_trans_datetime()
+        if latest_trans is not None:
+            return latest_trans.isoformat()
 
     def get_interational_ids(self):
         """
