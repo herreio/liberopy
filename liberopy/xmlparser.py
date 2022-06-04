@@ -103,10 +103,10 @@ class ServiceResponse:
                     return False
 
 
-class Title(ServiceResponse):
+class ResultItem(ServiceResponse):
 
-    def __init__(self, xmlstr):
-        super().__init__(xmlstr, tagname="GetTitleResponse")
+    def __init__(self, xmlstr, tagname="searchResultItems"):
+        super().__init__(xmlstr, tagname=tagname)
 
     def get_rsn(self):
         return self.text("rsn")
@@ -119,6 +119,57 @@ class Title(ServiceResponse):
 
     def get_publication(self):
         return self.text("publication")
+
+    def get_publication_year(self):
+        return self.text("publicationYear")
+
+    def get_gmd(self):
+        return self.text("gmd")
+
+    def get_holdings(self):
+        return self.text("holdings")
+
+    def get_branch(self):
+        return self.text("branch")
+
+    def get_collection(self):
+        return self.text("collection")
+
+    def get_call_number(self):
+        return self.text("callNumber")
+
+    def get_isbn(self):
+        return self.text("ISBN")
+
+    def get_issn(self):
+        return self.text("ISSN")
+
+    def get_date_added(self):
+        return self.text("dateAdded")
+
+    def get_items_barcode(self):
+        return self.texts(["barcodeItems", "BarcodeItem", "barcode"])
+
+    def get_items_branch(self):
+        return self.texts(["barcodeItems", "BarcodeItem", "branch"])
+
+    def get_items_call_number(self):
+        return self.texts(["barcodeItems", "BarcodeItem", "callNumber"])
+
+    def get_items_collection(self):
+        return self.texts(["barcodeItems", "BarcodeItem", "collection"])
+
+    def get_items_exception(self):
+        return self.texts(["barcodeItems", "BarcodeItem", "exception"])
+
+    def get_items_status(self):
+        return self.texts(["barcodeItems", "BarcodeItem", "status"])
+
+
+class Title(ResultItem):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="GetTitleResponse")
 
 
 class ResultItems(ServiceResponse):
@@ -143,6 +194,10 @@ class ResultItems(ServiceResponse):
 
     def get_list(self):
         return self._get_list()
+
+    def items(self):
+        for item in self.elems("searchResultItems"):
+            yield ResultItem(etree.tostring(item).decode())
 
 
 class Search(ResultItems):
@@ -511,6 +566,42 @@ class MabJson:
         """
         return self.get_values("025")
 
+    def get_dnb_id(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        025       UEBERREGIONALE IDENTIFIKATIONSNUMMER
+
+          Indikator:
+          a     = DNB
+        """
+        return self.get_value("025", "a")
+
+    def get_loc_id(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        025       UEBERREGIONALE IDENTIFIKATIONSNUMMER
+
+          Indikator:
+          l     = LoC
+        """
+        return self.get_value("025", "l")
+
+    def get_oclc_id(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        025       UEBERREGIONALE IDENTIFIKATIONSNUMMER
+
+          Indikator:
+          o     = OCLC
+        """
+        return self.get_value("025", "o")
+
     def get_zdb_id(self):
         """
         001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
@@ -546,6 +637,18 @@ class MabJson:
                   (ab 1996)
         """
         return self.get_values("026")
+
+    def get_swb_id(self):
+        """
+        001-029   SEGMENT IDENTIFIKATIONSNUMMERN, DATUMS- UND VERSIONS-
+                  ANGABEN
+
+        026       REGIONALE IDENTIFIKATIONSNUMMER
+
+          Indikator:
+          f     = Suedwestdeutscher Bibliotheksverbund
+        """
+        return self.get_value("026", sfname="f")
 
     def get_kxp_id(self):
         """
@@ -1099,6 +1202,63 @@ class Item(ServiceResponse):
 
     def get_rid(self):
         return self.text("RID")
+
+    def get_barcode(self):
+        return self.text("barcode")
+
+    def get_branch(self):
+        return self.text("branchAt")
+
+    def get_date_purchased(self):
+        return self.text("purchaseDate")
+
+    def get_branch_purchased(self):
+        return self.text("purchasedBy")
+
+    def get_supplier_code(self):
+        return self.text("supplierCode")
+
+    def get_branch_owner(self):
+        return self.text("ownerBranch")
+
+    def get_exception_code(self):
+        return self.text("exceptionCode")
+
+    def get_collection_code(self):
+        return self.text("collectionCode")
+
+    def get_call_number(self):
+        return self.text("callNumber")
+
+    def get_acquisition_type(self):
+        return self.text("acquisitionType")
+
+    def get_statistics(self):
+        return self.text("statistic1")
+
+    def get_inventory_number(self):
+        return self.text("inventoryNumber")
+
+    def get_gmd_code(self):
+        return self.text("gmd")
+
+    def get_stack_location_code(self):
+        return self.text("stackLocation")
+
+    def get_call_numbers(self):
+        return self.texts(["callNumberList", "callNumberListItem"])
+
+    def get_item_notes(self):
+        return self.text("itemNotes")
+
+    def get_review_date(self):
+        return self.text("reviewDate")
+
+    def get_volume_title_ref(self):
+        return self.text("volumeTitleRef")
+
+    def get_serials_issue_sort_code(self):
+        return self.text("serialsIssueSortCode")
 
 
 class MabBlock(ServiceResponse):
