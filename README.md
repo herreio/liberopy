@@ -132,4 +132,4 @@ According to the company’s [website](https://libero.com.au/company/our-partner
 - [Waverley Library](https://library.waverley.nsw.gov.au/libero/WebOpac.cls)
     - `https://library.waverley.nsw.gov.au/libero`
 
-cf. https://www.google.com/search?q=libero+webopac
+cf. https://duckduckgo.com/?q=libero+webopac / https://www.google.com/search?q=libero+webopac
