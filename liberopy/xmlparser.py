@@ -557,7 +557,11 @@ class MabJson:
           a = Datum der Ersterfassung
           b = Datum der Fremddatenuebernahme
         """
-        return self.get_date_entered()["ind"]
+        find = self.get_date_entered()["ind"]
+        if find == "a":
+            return "Datum der Ersterfassung"
+        elif find == "b":
+            return "Datum der Fremddatenuebernahme"
 
     def get_date_entered_date(self):
         """
@@ -594,7 +598,7 @@ class MabJson:
           Indikator:
           Blank = nicht definiert
         """
-        return self.get_value("003", " ")
+        return self.get_value("003")
 
     def get_latest_trans_datetime(self):
         """
@@ -603,7 +607,7 @@ class MabJson:
 
         003       DATUM DER LETZTEN KORREKTUR
         """
-        latest_trans = self.get_latest_trans()
+        latest_trans = self.get_latest_trans()["val"]
         if latest_trans is not None:
             try:
                 return datetime.datetime.strptime(latest_trans, "%Y%m%d%H%M%S")
