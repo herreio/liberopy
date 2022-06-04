@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Donatus Herre <donatus.herre@slub-dresden.de>"
-__version__ = "2022.6.4"
+__version__ = "2022.6.5"
 __license__ = "GPLv3"
 
 from . import xmlparser
