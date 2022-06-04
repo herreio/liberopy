@@ -211,6 +211,9 @@ class Catalogue(ResultItems):
     def __init__(self, xmlstr):
         super().__init__(xmlstr, "CatalogueResponse")
 
+    def get_term(self):
+        return self.text("Term")
+
 
 class TitleDetails(ServiceResponse):
 
