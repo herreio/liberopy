@@ -4,6 +4,13 @@ This Python package provides a Libero Web Services SOAP API client.
 
 ## Setup
 
+Depending on your preferred installation scope, you may need to use `sudo` or pip’s `--user` flag when running the following setup commands. However, it is recommended to use a virtual environment that does not require either.
+
+```sh
+python3 -m venv env
+. env/bin/activate
+```
+
 ### ... via SSH
 
 ```sh
