@@ -1,3 +1,8 @@
+2022-06-06
+
+- update TitleDetailsMab and MabJson methods
+- add MabJson methods get_date_entered_* and get_latest_trans_*
+
 2022-06-05
 
 - add Catalogue method get_term
