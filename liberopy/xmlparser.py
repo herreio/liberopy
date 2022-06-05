@@ -6,7 +6,7 @@ Parser classes for XML serialized data retrieved via Libero Web Services SOAP AP
 import dateutil.parser
 from lxml import etree
 
-from .mabparser import MabTitle
+from . import mabparser
 
 
 class ServiceResponse:
@@ -455,7 +455,7 @@ class TitleDetailsMab(ServiceResponse):
         return mab_data
 
     def get_parser(self):
-        return MabTitle(self.to_dict())
+        return mabparser.MabTitle(self.to_dict())
 
 
 class ItemDetails(ServiceResponse):

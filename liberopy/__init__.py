@@ -7,5 +7,5 @@ __author__ = "Donatus Herre <donatus.herre@slub-dresden.de>"
 __version__ = "2022.6.12"
 __license__ = "GPLv3"
 
-from . import mabparser, xmlparser
+from . import xmlparser
 from .webservices import WebServices
