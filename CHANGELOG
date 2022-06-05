@@ -1,3 +1,8 @@
+2022-06-10
+
+- rename MabJson class to MabTitle
+- move MabTitle class to new module mabparser
+
 2022-06-09
 
 - parse leader field in TitleDetailsMab
