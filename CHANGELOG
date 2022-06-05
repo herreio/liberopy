@@ -1,3 +1,10 @@
+2022-06-09
+
+- parse leader field in TitleDetailsMab
+- add MabJson method get_leader
+- remove attribute data from TitleDetailsMab
+- rename TitleDetailsMab method _transform to to_dict
+
 2022-06-08
 
 - fix MabJson methods get_kxp_id and get_swb_id
