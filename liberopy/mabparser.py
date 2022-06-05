@@ -1,14 +1,23 @@
 # -*- coding: utf-8 -*-
+"""
+Parser class for MAB formatted data retrieved via Libero Web Services SOAP API
+"""
 
 import datetime
 
 
 class MabTitle:
     """
-    Die Entwicklung und Pflege von MAB (seit 1995 MAB2) ist 2006
-    abgeschlossen worden, das Format wurde »eingefroren«.
+    The Maschinelles Austauschformat für Bibliotheken or MAB (literally
+    translating as "machine data exchange format for libraries") is a
+    bibliographic data exchange format.
 
-    Vgl. https://format.gbv.de/mab
+    MAB was commonly used as an exchange format for metadata especially in
+    German-speaking countries. ... The origins of MAB trace back to 1973 ...
+    A comprehensive revision of MAB led to the new format version MAB2 in 1995
+    ... In June 2013, the delivery of data in MAB format was finally abandoned.
+
+    https://en.wikipedia.org/wiki/Maschinelles_Austauschformat_f%C3%BCr_Bibliotheken
     """
 
     def __init__(self, data):

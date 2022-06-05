@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Client classes for the Libero Web Services SOAP API
+"""
 
 import atexit
 import logging

@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+"""
+Parser classes for XML serialized data retrieved via Libero Web Services SOAP API
+"""
 
 import dateutil.parser
 from lxml import etree
