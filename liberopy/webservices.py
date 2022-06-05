@@ -98,7 +98,7 @@ class WebServices:
     def titlemab(self, rsn):
         details = self.titledetails(rsn)
         if details is not None:
-            return details.get_mab_json()
+            return details.get_mab_parser()
 
     def orderstatus(self, on, ln):
         if self.token is not None:
