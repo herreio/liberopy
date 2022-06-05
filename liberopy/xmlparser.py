@@ -409,14 +409,14 @@ class TitleDetailsMab(ServiceResponse):
 
     def __init__(self, xmlstr):
         super().__init__(xmlstr, tagname="MAB")
-        self.data = self._transform()
 
-    def _transform(self):
+    def to_dict(self):
         mab_data = {
             "_id": None,
             "_type": None,
             "_status": None,
             "_version": None,
+            "_leader": None,
             "_fields": {}
         }
         tag_pattern = self.ns("Tag")
@@ -426,30 +426,32 @@ class TitleDetailsMab(ServiceResponse):
         mab_elems = self.elems("MAB")
         for mab_elem in mab_elems:
             tag = mab_elem.find(tag_pattern).text
-            subfield = mab_elem.find(subfield_pattern).text
-            sequence = mab_elem.find(sequence_pattern).text
             mab_data_plain = mab_elem.find(mab_data_plain_pattern)
             if mab_data_plain is not None:
                 mab_data_plain = mab_data_plain.text
-            if tag not in mab_data["_fields"]:
-                mab_data["_fields"][tag] = []
-            tag_data = mab_data["_fields"][tag]
-            tag_data.append({
-              "indicator": subfield,
-              "sequence": int(sequence),
-              "value": mab_data_plain
-            })
-            mab_data["_fields"][tag] = tag_data
             if tag == "###":
                 mab_data["_type"] = mab_data_plain[23]
                 mab_data["_status"] = mab_data_plain[5]
                 mab_data["_version"] = mab_data_plain[6:10]
-            elif tag == "001":
+                mab_data["_leader"] = mab_data_plain
+            else:
+                if tag not in mab_data["_fields"]:
+                    mab_data["_fields"][tag] = []
+                tag_data = mab_data["_fields"][tag]
+                subfield = mab_elem.find(subfield_pattern).text
+                sequence = mab_elem.find(sequence_pattern).text
+                tag_data.append({
+                  "indicator": subfield,
+                  "sequence": int(sequence),
+                  "value": mab_data_plain
+                })
+                mab_data["_fields"][tag] = tag_data
+            if tag == "001":
                 mab_data["_id"] = mab_data_plain
         return mab_data
 
     def get_json(self):
-        return MabJson(self.data)
+        return MabJson(self.to_dict())
 
 
 class MabJson:
@@ -478,6 +480,10 @@ class MabJson:
     def get_version(self):
         if isinstance(self.data, dict) and "_version" in self.data:
             return self.data["_version"]
+
+    def get_leader(self):
+        if isinstance(self.data, dict) and "_leader" in self.data:
+            return self.data["_leader"]
 
     def get_fields(self):
         if isinstance(self.data, dict) and "_fields" in self.data:
