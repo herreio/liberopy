@@ -333,6 +333,113 @@ class MabTitle:
         """
         return self.get_values("029")
 
+    def get_carrier(self):
+        """
+        050-064   SEGMENT VEROEFFENTLICHUNGS- UND MATERIALSPEZIFISCHE
+                  ANGABEN
+
+        050       DATENTRAEGER
+
+          Indikator:
+          blank = nicht definiert
+
+          Datenelemente:
+            0  Druckschrift
+               a = nicht spezifiziert
+
+            1  Handschrift
+               a = nicht spezifiziert
+
+            2  Papierzustand
+               a = nicht spezifiziert
+               b = saeurefreies, alterungsbestaendiges Papier
+               c = kein saeurefreies, kein alterungsbestaendiges
+                   Papier
+               d = entsaeuertes Papier
+               e = Pergament
+               z = sonstiges Material
+
+            3  Mikroform
+               a = nicht spezifiziert
+               b = Mikroform-Master
+               c = Sekundaerform
+
+            4  Blindenschrifttraeger
+               a = nicht spezifiziert
+
+          5-6  Audiovisuelles Medium / Bildliche Darstellung
+
+               Tontraeger:
+               aa = CD-DA (Compact Disc Digital Audio, Single
+                    Compact Disc)
+               ab = CD-Bildplatte
+               ac = Tonband
+               ad = Compact-Cassette
+               ae = Micro-Cassette (Diktier- oder Stenocassette)
+               af = Digital Audio Tape (DAT-Cassette)
+               ag = Digital Compact Cassette (DCC-Cassette)
+               ah = Cartridge (8-Track Cartridge)
+               ai = Drahtton (Stahlband)
+               aj = Schallplatte
+               ak = Walze (Zylinder)
+               al = Klavierrolle (Mechanisches Klavier)
+               am = Filmtonspur
+               an = Tonbildreihe
+
+               Film, visuelle Projektion:
+               ba = Filmspulen
+               bb = Film-Cartridge
+               bc = Film-Cassette
+               bd = Anderes Filmmedium
+               be = Filmstreifen
+               bf = Filmstreifen-Cartridge
+               bg = Filmstreifen-Rolle
+               bh = Anderer Filmstreifentyp
+               bi = Diapositiv, Diaset, Stereograph
+               bj = Arbeitstransparent
+               bk = Arbeitstransparentstreifen
+
+               Videoaufnahme:
+               ca = Videobandcassette
+               cb = Videobandcartridge
+               cc = Videobandspulen
+               cd = Bildplatte (Videodisc)
+               ce = Anderer Videotyp
+
+               Bildliche Darstellung:
+               da = Foto
+               db = Kunstblatt (Originalgraphik, Nachdruck)
+               dc = Plakat
+
+               Sonstige Angaben:
+               uu = unbekannt
+               yy = nicht spezifiziert
+               zz = sonstige audiovisuelle Medien
+
+            7  Medienkombination
+               a = nicht spezifiziert
+
+            8  Computerdatei
+               a = nicht spezifiziert
+               b = Diskette(n)
+               c = Magnetbandkassette(n)
+               d = Optische Speicherplatte(n)
+                   (z.B. CD-ROM, CD-I, Photo-CD, WORM, DVD)
+               e = Einsteckmodul(e)
+               f = Magnetband, Magnetbaender
+               g = Computerdatei(en) im Fernzugriff
+               z = sonstige Computerdatei(en)
+
+            9  Spiele
+               a = nicht spezifiziert
+
+           10  Landkarten
+               a = nicht spezifiziert
+
+        11-13  Anzahl der physischen Einheiten
+        """
+        return self.get_values("050")
+
     def get_date_published(self):
         """
         400-437   SEGMENT VEROEFFENTLICHUNGSVERMERK, UMFANG, BEIGABEN
