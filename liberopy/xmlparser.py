@@ -395,6 +395,9 @@ class TitleDetails(ServiceResponse):
     def get_filing_indicator(self):
         return self.text("FilingIndicator")
 
+    def get_opac_display_flag(self):
+        return True if self.text("OPACDisplayFlag") == "true" else False
+
     def get_elem_mab(self):
         return self.elem("MAB")
 
