@@ -1,3 +1,7 @@
+2022-06-21
+
+- add TitleDetails method get_opac_display_flag
+
 2022-06-14
 
 - add MabTitle method get_carrier
