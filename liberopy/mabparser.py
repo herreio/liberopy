@@ -628,4 +628,6 @@ class MabTitle:
 
         997       DBS-FACHGRUPPE MIT UNTERGRUPPE
         """
-        return [t["val"] for t in self.get_values("997", reduce=False)]
+        tag = self.get_values("997", reduce=False)
+        if isinstance(tag, list):
+            return [t["val"] for t in tag]
