@@ -1,3 +1,9 @@
+2022-08-20
+
+- add WebServices method memberinfo
+- add ServicePackage class OnlineILLService
+- add ServiceResponse class MemberInformation
+
 2022-07-08
 
 - prevent TypeError in MabTitle
