@@ -54,6 +54,8 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
     - GetALLItemsByRID
     - GetMABBlock
     - GetMARCBlock
+- OnlineILLService
+    - GetMemberInformation
 
 ## Usage Example
 
@@ -79,6 +81,8 @@ newlist = libero.newitems()
 rsn = libero.rid2rsn("123456")
 # Get barcodes of items from the provided RID
 bcs = libero.rid2bc("123456")
+# Get information on member via member code
+member = libero.memberinfo("10189")
 # Log in before using methods of LibraryAPI
 libero.login("GuestUser", "GuestPassword")
 # Retrieve title details via RSN

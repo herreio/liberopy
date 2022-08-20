@@ -15,6 +15,7 @@ class WebServices:
     def __init__(self, domain, db="ACM", loglevel=logging.DEBUG):
         self.domain = domain
         self.base = "{0}/LiberoWebServices".format(self.domain)
+        self.base_ill = "{0}/InterLibrary.service.web".format(self.domain)
         self.base_ocsl = "{0}/services.catalogue".format(self.domain)
         self.db = db
         self.token = None
@@ -24,6 +25,7 @@ class WebServices:
         self._logger(loglevel)
         self.CatalogueSearcher = CatalogueSearcher(self.base, self.db, loglevel=self.logger.level)
         self.OnlineCatalogue = OnlineCatalogue(self.base_ocsl, self.db, loglevel=self.logger.level)
+        self.OnlineILLService = OnlineILLService(self.base_ill, self.db, loglevel=self.logger.level)
 
     def _logger(self, level):
         self.logger = logging.getLogger("liberopy.WebServices")
@@ -117,6 +119,9 @@ class WebServices:
         if self.token is not None:
             return self.LibraryAPI.orderlineinfo(on, ln)
         self.logger.error("You have to log in first!")
+
+    def memberinfo(self, mc):
+        return self.OnlineILLService.member_info(mc)
 
 
 class ServicePackage:
@@ -479,3 +484,26 @@ class OnlineCatalogue(ServicePackage):
 
     def add_db_to_url(self, url, db):
         return self.add_param(url, "dbName", db)
+
+
+class OnlineILLService(ServicePackage):
+
+    def __init__(self, base, db, loglevel=logging.DEBUG):
+        super().__init__(base, "OnlineILLService", loglevel=loglevel)
+        self.db = db
+
+    def member_info(self, mc):
+        url = self.url_member_info(mc, self.db)
+        self.logger.info("Fetch information on member with code {0}.".format(mc))
+        return self.soap_request(url, post=xmlparser.MemberInformation)
+
+    def url_member_info(self, mc, db):
+        url = self.method_path("GetMemberInformation")
+        url = self.add_member_code_to_url(url, mc)
+        return self.add_db_to_url(url, db)
+
+    def add_db_to_url(self, url, db):
+        return self.add_param(url, "dbName", db)
+
+    def add_member_code_to_url(self, url, mc):
+        return self.add_param(url, "MemberCode", mc)

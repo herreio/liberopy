@@ -852,3 +852,27 @@ class MarcBlock(ServiceResponse):
 
     def __init__(self, xmlstr):
         super().__init__(xmlstr, tagname="GetMARCBlockResponse")
+
+
+class MemberInformation(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="GetMemberInformationResponse")
+
+    def get_field(self, name):
+        return self.text(["Fields[@field=\"{0}\"]".format(name), "value"])
+
+    def get_code(self):
+        return self.get_field("Code")
+
+    def get_key(self):
+        return self.get_field("Key")
+
+    def get_email(self):
+        return self.get_field("Email")
+
+    def get_given_name(self):
+        return self.get_field("GivenName")
+
+    def get_surname(self):
+        return self.get_field("Surname")
