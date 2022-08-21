@@ -50,6 +50,7 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
     - OrderStatus
     - OrderInformation
     - OrderLineInformation
+    - Branch
 - OnlineCatalogue
     - GetItemByBarcode
     - GetALLItemsByRID
@@ -98,6 +99,8 @@ orderinfo = libero.orderinfo("725")
 orderlineinfo = libero.orderlineinfo("9", "1")
 # Retrieve the current order status
 orderstatus = libero.orderstatus("1", "1")
+# Retrieve list of branches
+branches = libero.branches()
 ```
 
 ## Public Instances

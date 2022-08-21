@@ -901,3 +901,17 @@ class MemberDetails(ServiceResponse):
     def get_surname(self):
         return self.text("Surname")
 
+
+class Branches(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="BranchResponse")
+
+    def get_codes(self):
+        return self.texts(["Branches", "Code"])
+
+    def get_descriptions(self):
+        return self.texts(["Branches", "Description"])
+
+    def get_opac_selections(self):
+        return self.texts(["Branches", "OPACSelection"])

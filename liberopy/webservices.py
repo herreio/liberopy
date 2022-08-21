@@ -108,6 +108,11 @@ class WebServices:
             return None
         self.logger.error("You have to log in first!")
 
+    def branches(self):
+        if self.token is not None:
+            return self.LibraryAPI.branches()
+        self.logger.error("You have to log in first!")
+
     def titlemab(self, rsn):
         details = self.titledetails(rsn)
         if details is not None:
@@ -234,6 +239,11 @@ class LibraryAPI(ServicePackage):
             return self.soap_request(url, post=xmlparser.MemberDetails)
         self.logger.error("You have to pass member code or member id!")
 
+    def branches(self):
+        url = self.url_branches()
+        self.logger.info("Fetch list of branches.")
+        return self.soap_request(url, post=xmlparser.Branches)
+
     def url_itemdetails(self, barcode):
         url = self.method_path("GetItemDetails")
         url = self.add_barcode_to_url(url, barcode)
@@ -269,6 +279,10 @@ class LibraryAPI(ServicePackage):
             url = self.add_membercode_to_url(url, mc)
         elif mid is not None:
             url = self.add_memberid_to_url(url, mid)
+        return self.add_token_to_url(url, self.token)
+
+    def url_branches(self):
+        url = self.method_path("Branch")
         return self.add_token_to_url(url, self.token)
 
     def add_rsn_to_url(self, url, rsn):
