@@ -1,3 +1,9 @@
+2022-08-21
+
+- add WebServices methods memberdetails and branches
+- add LibraryAPI methods memberdetails and branches
+- add ServiceResponse classes MemberDetails and Branches
+
 2022-08-20
 
 - add WebServices method memberinfo
