@@ -100,6 +100,14 @@ class WebServices:
             return self.LibraryAPI.titledetails(rsn)
         self.logger.error("You have to log in first!")
 
+    def memberdetails(self, mc=None, mid=None):
+        if self.token is not None:
+            if mc is not None or mid is not None:
+                return self.LibraryAPI.memberdetails(mc=mc, mid=mid)
+            self.logger.error("You have to pass member code or member id!")
+            return None
+        self.logger.error("You have to log in first!")
+
     def titlemab(self, rsn):
         details = self.titledetails(rsn)
         if details is not None:
@@ -216,6 +224,16 @@ class LibraryAPI(ServicePackage):
         self.logger.info("Fetch order line {0}/{1}.".format(on, ln))
         return self.soap_request(url, post=xmlparser.OrderLineInformation)
 
+    def memberdetails(self, mc=None, mid=None):
+        url = self.url_memberdetails(mc=mc, mid=mid)
+        if url is not None:
+            if mc is not None:
+                self.logger.info("Fetch member with code {0}.".format(mc))
+            elif mid is not None:
+                self.logger.info("Fetch member with ID {0}.".format(mid))
+            return self.soap_request(url, post=xmlparser.MemberDetails)
+        self.logger.error("You have to pass member code or member id!")
+
     def url_itemdetails(self, barcode):
         url = self.method_path("GetItemDetails")
         url = self.add_barcode_to_url(url, barcode)
@@ -243,6 +261,16 @@ class LibraryAPI(ServicePackage):
         url = self.add_linenum_to_url(url, ln)
         return self.add_token_to_url(url, self.token)
 
+    def url_memberdetails(self, mc=None, mid=None):
+        if mc is None and mid is None:
+            return None
+        url = self.method_path("GetMemberDetails")
+        if mc is not None:
+            url = self.add_membercode_to_url(url, mc)
+        elif mid is not None:
+            url = self.add_memberid_to_url(url, mid)
+        return self.add_token_to_url(url, self.token)
+
     def add_rsn_to_url(self, url, rsn):
         return self.add_param(url, "RSN", rsn)
 
@@ -257,6 +285,12 @@ class LibraryAPI(ServicePackage):
 
     def add_orderline_to_url(self, url, ln):
         return self.add_param(url, "OrderLine", ln)
+
+    def add_memberid_to_url(self, url, mid):
+        return self.add_param(url, "MemberID", mid)
+
+    def add_membercode_to_url(self, url, mc):
+        return self.add_param(url, "MemberCode", mc)
 
 
 class CatalogueSearcher(ServicePackage):

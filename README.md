@@ -46,6 +46,7 @@ pip install -e git+https://github.com/herreio/liberopy.git#egg=liberopy
 - LibraryAPI
     - GetTitleDetails
     - GetItemDetails
+    - GetMemberDetails
     - OrderStatus
     - OrderInformation
     - OrderLineInformation
@@ -89,6 +90,8 @@ libero.login("GuestUser", "GuestPassword")
 titledetails = libero.titledetails("123456")
 # Retrieve item details via barcode
 itemdetails = libero.itemdetails("123456")
+# Retrieve member details via member code (or ID of member)
+memberdetails = libero.memberdetails(mc="10157")
 # Retrieve header information for an order
 orderinfo = libero.orderinfo("725")
 # Retrieve the order’s line number information

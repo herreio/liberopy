@@ -876,3 +876,28 @@ class MemberInformation(ServiceResponse):
 
     def get_surname(self):
         return self.get_field("Surname")
+
+
+class MemberDetails(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="GetMemberDetailsResponse")
+
+    def get_borrower_id(self):
+        return self.text("BorrowerID")
+
+    def get_borrower_code(self):
+        return self.text("BorrowerCode")
+
+    def get_email_address(self):
+        return self.text("EmailAddress")
+
+    def get_short_name(self):
+        return self.text("ShortName")
+
+    def get_given_name(self):
+        return self.text("GivenNames")
+
+    def get_surname(self):
+        return self.text("Surname")
+
