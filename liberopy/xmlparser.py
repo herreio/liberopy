@@ -26,7 +26,9 @@ class ServiceResponse:
             except etree.XMLSyntaxError:
                 self.root = None
         if self.root is not None:
-            self.xmlstr_pretty = etree.tostring(self.tree(), pretty_print=True).decode()
+            self.xmlstr_pretty = etree.tostring(self.tree(), encoding="UTF-8",
+                                                xml_declaration=True,
+                                                pretty_print=True).decode()
         self.tagname = tagname
 
     def tree(self):
@@ -40,8 +42,8 @@ class ServiceResponse:
     def store_pretty(self, path):
         xml_tree = self.tree()
         if xml_tree is not None:
-            xml_tree.write(path, xml_declaration=True,
-                           encoding="UTF-8", pretty_print=True)
+            xml_tree.write(path, encoding="UTF-8", xml_declaration=True,
+                           pretty_print=True)
 
     def get_elem(self, tagname):
         xml_tree = self.tree()
@@ -64,7 +66,8 @@ class ServiceResponse:
     def get_texts(self, tagname):
         elems = self.get_elems(tagname)
         if elems is not None:
-            return [e.text.strip() for e in elems if e is not None and e.text is not None]
+            return [e.text.strip() for e in elems
+                    if e is not None and e.text is not None]
         return []
 
     @staticmethod
