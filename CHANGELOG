@@ -1,3 +1,7 @@
+2022-08-23
+
+- add encoding and declaration to ServiceResponse.xmlstr_pretty
+
 2022-08-21
 
 - add WebServices methods memberdetails and branches
