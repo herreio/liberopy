@@ -1,3 +1,8 @@
+2022-09-11
+
+- rename OrderLineInformation method get_payment_date to get_expected_payment_date
+- rename OrderLineInformation method get_delivery_date to get_expected_delivery_date
+
 2022-08-23
 
 - add encoding and declaration to ServiceResponse.xmlstr_pretty
