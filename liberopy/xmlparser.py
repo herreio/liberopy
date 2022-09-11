@@ -721,7 +721,7 @@ class OrderLineInformation(ServiceResponse):
     def get_invoice_date(self):
         return self.text("InvoiceDate")
 
-    def get_delivery_date(self):
+    def get_expected_delivery_date(self):
         return self.text("ExpectedDeliveryDate")
 
     def get_date_ordered(self):
@@ -736,7 +736,7 @@ class OrderLineInformation(ServiceResponse):
     def get_print_status(self):
         return self.text("PrintStatus")
 
-    def get_payment_date(self):
+    def get_expected_payment_date(self):
         return self.text("ExpectedPaymentDate")
 
     def get_order_status(self):
