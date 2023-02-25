@@ -3,6 +3,7 @@
 Parser classes for XML serialized data retrieved via Libero Web Services SOAP API
 """
 
+import base64
 import dateutil.parser
 from lxml import etree
 
@@ -178,6 +179,69 @@ class Title(ResultItem):
 
     def __init__(self, xmlstr):
         super().__init__(xmlstr, tagname="GetTitleResponse")
+
+    def get_elem_marc_data_items(self):
+        return self.elem("MarcDataItems")
+
+    def get_mab_data_items_xml_parser(self):
+        marc_data_items_elems = self.get_elem_marc_data_items()
+        if marc_data_items_elems is not None:
+            return TitleMab(etree.tostring(marc_data_items_elems).decode())
+
+    def get_mab_data_items_parser(self):
+        mab_data_items_xml = self.get_mab_data_items_xml_parser()
+        if mab_data_items_xml is not None:
+            return mab_data_items_xml.get_parser()
+
+
+class TitleMab(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="MarcDataItems")
+
+    def to_dict(self):
+        mab_data = {
+            "_id": None,
+            "_type": None,
+            "_status": None,
+            "_version": None,
+            "_leader": None,
+            "_fields": {}
+        }
+        tag_pattern = self.ns("tag")
+        sequence_pattern = self.ns("seq")
+        subfield_pattern = self.ns("subfield")
+        mab_data_b64_pattern = self.ns("tagData")
+        mab_elems = self.elems("MarcDataItem")
+        for mab_elem in mab_elems:
+            tag = mab_elem.find(tag_pattern).text[1:]
+            mab_data_b64 = mab_elem.find(mab_data_b64_pattern)
+            if mab_data_b64 is not None:
+                mab_data_plain = base64.b64decode(mab_data_b64.text).decode("utf-8")
+            if tag == "###":
+                mab_data["_type"] = mab_data_plain[23]
+                mab_data["_status"] = mab_data_plain[5]
+                mab_data["_version"] = mab_data_plain[6:10]
+                mab_data["_leader"] = mab_data_plain
+                continue
+            else:
+                if tag not in mab_data["_fields"]:
+                    mab_data["_fields"][tag] = []
+                tag_data = mab_data["_fields"][tag]
+                subfield = mab_elem.find(subfield_pattern).text
+                sequence = mab_elem.find(sequence_pattern).text
+                tag_data.append({
+                  "indicator": subfield,
+                  "sequence": int(sequence),
+                  "value": mab_data_plain
+                })
+                mab_data["_fields"][tag] = tag_data
+            if tag == "001":
+                mab_data["_id"] = mab_data_plain
+        return mab_data
+
+    def get_parser(self):
+        return mabparser.MabTitle(self.to_dict())
 
 
 class ResultItems(ServiceResponse):
