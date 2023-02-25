@@ -1,3 +1,7 @@
+2023-02-25
+
+- add ServiceResponse class TitleMab
+
 2022-09-11
 
 - rename OrderLineInformation method get_payment_date to get_expected_payment_date
