@@ -358,7 +358,11 @@ class CatalogueSearcher(ServicePackage):
         """Deprecated"""
         url = self.url_title(rsn, self.db)
         self.logger.info("Fetch title with RSN {0}.".format(rsn))
-        return self.soap_request(url, post=xmlparser.Title)
+        response = self.soap_request(url, post=xmlparser.Title)
+        if response is not None and (
+                response.elem("searchResultItems")
+                and len(response.elem("searchResultItems")) > 4):
+            return response
 
     def rid2rsn(self, rid):
         url = self.url_rid2rsn(rid)
