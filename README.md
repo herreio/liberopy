@@ -115,8 +115,6 @@ According to the company’s [website](https://libero.com.au/company/our-partner
     - `https://centralcoast.libero.com.au/libero`
 - [Deutsche Bundesbank - Bibliothek](http://www.libit.de/bbkwo/WebOpac.cls)
     - `http://www.libit.de/bbkwo`
-- [Hochschule Bochum](https://opac.hs-bochum.de/libero/WebOpac.cls)
-    - `https://opac.hs-bochum.de/libero`
 - [Hochschule für Grafik und Buchkunst Leipzig](https://hgb.libero-is.de/libero/WebOpac.cls)
     - `https://hgb.libero-is.de/libero`
 - [Kunsthaus Zürich](https://opac.kunsthaus.ch/libero/WebOpac.cls)
