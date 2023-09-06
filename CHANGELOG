@@ -1,3 +1,7 @@
+2023-09-06
+
+- add OrderLineInformation method get_internal_notes
+
 2023-06-20
 
 - handle empty return in CatalogueSearcher.title
