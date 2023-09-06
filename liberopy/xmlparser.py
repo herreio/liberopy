@@ -839,6 +839,9 @@ class OrderLineInformation(ServiceResponse):
     def get_dispatch_code(self):
         return self.text("DispatchCode")
 
+    def get_internal_notes(self):
+        return self.text("InternalNotes")
+
 
 class Item(ServiceResponse):
 
