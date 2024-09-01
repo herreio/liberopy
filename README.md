@@ -105,35 +105,24 @@ branches = libero.branches()
 
 ## Public Instances
 
-According to the company’s [website](https://libero.com.au/company/why-libero/), the library management system Libero has more than 2,500 users worldwide. Some examples of users can be found in the following list whose links point to the `WebOpac` class. Each link is followed by the base URL (`domain`) of the instance which can be used to initialize a client.
+According to the company’s [website](https://libero.com.au/company/why-libero/), the library management system Libero has more than 2,500 users worldwide. Some examples of users can be found in the following list.
 
 - [Bach Archiv Leipzig](https://bacharchiv.libero-is.de/libero/WebOpac.cls)
-    - `https://bacharchiv.libero-is.de/libero`
-- [Bibliothek der Lehrerausbildungsstätte Leipzig](https://portal.smk.sachsen.de/sbal-webopac/libero/WebOpac.cls)
-    - `https://portal.smk.sachsen.de/sbal-webopac/libero`
 - [Hochschule für Grafik und Buchkunst Leipzig](https://hgb.libero-is.de/libero/WebOpac.cls)
-    - `https://hgb.libero-is.de/libero`
 - [Kunsthaus Zürich](https://opac.kunsthaus.ch/libero/WebOpac.cls)
-    - `https://opac.kunsthaus.ch/libero`
 - [Parlamentsbibliothek Bern](https://biblio.parlament.ch/libero/WebOpac.cls)
-    - `https://biblio.parlament.ch/libero`
-- [Saarländische Universitäts- und Landesbibliothek](https://opac.sulb.uni-saarland.de/libero/WebOpac.cls)
-    - `https://opac.sulb.uni-saarland.de/libero`
+- [Richmond – Upper Clarence Regional Library](https://richmondvalley.libero.com.au/libero/WebOpac.cls)
 - [Stadtbibliothek Saarbrücken](https://opac.saarbruecken.de/libero/WebOpac.cls)
-    - `https://opac.saarbruecken.de/libero`
 - [Stadtbücherei Heinsberg](https://heinsberg.libero-is.de/libero/WebOpac.cls)
-    - `https://heinsberg.libero-is.de/libero`
 - [Stadt- und Regionalbibliothek Cottbus](https://web-opac.bibliothek-cottbus.de/libero/WebOpac.cls)
-    - `https://web-opac.bibliothek-cottbus.de/libero`
 - [Università Pontificia Salesiana - Biblioteca Don Bosco](https://webopacups.urbe.it/libero/WebOpac.cls)
-    - `https://webopacups.urbe.it/libero`
 - [Universität Konstanz - KIM](https://libero.ub.uni-konstanz.de/libero/WebOpac.cls)
-    - `https://libero.ub.uni-konstanz.de/libero`
-- [Universitätsbibliothek Chemnitz](https://opac.bibliothek.tu-chemnitz.de/libero/WebOpac.cls)
-    - `https://opac.bibliothek.tu-chemnitz.de/libero`
 - [University of Mauritius - Library](https://library.uom.ac.mu/libero/WebOpac.cls)
-    - `https://library.uom.ac.mu/libero`
-- [Waverley Library](https://library.waverley.nsw.gov.au/libero/WebOpac.cls)
-    - `https://library.waverley.nsw.gov.au/libero`
 
 cf. https://duckduckgo.com/?q=libero+webopac / https://www.google.com/search?q=libero+webopac
+
+### Run Tests
+
+```sh
+python -m unittest
+```
