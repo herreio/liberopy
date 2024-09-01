@@ -110,6 +110,7 @@ According to the company’s [website](https://libero.com.au/company/why-libero/
 - [Bach Archiv Leipzig](https://bacharchiv.libero-is.de/libero/WebOpac.cls)
 - [Hochschule für Grafik und Buchkunst Leipzig](https://hgb.libero-is.de/libero/WebOpac.cls)
 - [Kunsthaus Zürich](https://opac.kunsthaus.ch/libero/WebOpac.cls)
+- [Mid-North Library Co-Operative](https://catalogue.mnclibrary.org.au/libero/WebOpac.cls)
 - [Parlamentsbibliothek Bern](https://biblio.parlament.ch/libero/WebOpac.cls)
 - [Richmond – Upper Clarence Regional Library](https://richmondvalley.libero.com.au/libero/WebOpac.cls)
 - [Stadtbibliothek Saarbrücken](https://opac.saarbruecken.de/libero/WebOpac.cls)

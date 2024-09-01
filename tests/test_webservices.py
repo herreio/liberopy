@@ -7,6 +7,7 @@ connections = {
 "BAL": "https://bacharchiv.libero-is.de/libero",
 "HGB": "https://hgb.libero-is.de/libero",
 "ZUR": "https://opac.kunsthaus.ch/libero",
+"PPP": "https://catalogue.mnclibrary.org.au/libero",
 "PDB": "https://biblio.parlament.ch/libero",
 "CAS": "https://richmondvalley.libero.com.au/libero",
 "SAR": "https://opac.saarbruecken.de/libero",
