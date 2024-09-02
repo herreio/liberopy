@@ -49,7 +49,7 @@ class ServiceResponse:
     def get_elem(self, tagname):
         xml_tree = self.tree()
         if xml_tree is not None:
-            elem = xml_tree.find("//{0}".format(tagname))
+            elem = xml_tree.find(".//{0}".format(tagname))
             if elem is not None:
                 return elem
 
@@ -61,7 +61,7 @@ class ServiceResponse:
     def get_elems(self, tagname):
         xml_tree = self.tree()
         if xml_tree is not None:
-            return xml_tree.findall("//{0}".format(tagname))
+            return xml_tree.findall(".//{0}".format(tagname))
         return []
 
     def get_texts(self, tagname):
