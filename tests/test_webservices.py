@@ -24,7 +24,7 @@ connections = {
 db_choices = list(connections.keys())
 db_choices_max_i = len(db_choices) - 1
 db_chosen = db_choices[random.randint(0, db_choices_max_i)]
-print(f"The database {db_chosen} was chosen for this test ----------------------------")
+print(f"The database {db_chosen} was chosen for the tests ----------------------------\n")
 
 class LiberoClientTestCase(unittest.TestCase):
 
