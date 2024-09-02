@@ -48,7 +48,7 @@ class LiberoClientTestCase(unittest.TestCase):
             self.newitems_list = self.newitems.get_list()
             self.assertIsInstance(self.newitems_list, list)
 
-    def test_search(self):
+    def test_search_title_item(self):
         self.search = self.client.search("Harry Potter")
         if self.search is None:
             print(f"Search via database {self.db} is None.")
@@ -57,11 +57,27 @@ class LiberoClientTestCase(unittest.TestCase):
             self.search_list = self.search.get_list()
             self.assertIsInstance(self.search_list, list)
             if len(self.search_list) > 0:
-                self.search_list_item = self.search_list[random.randint(0, len(self.search_list) - 1)]
-                if self.search_list_item is not None:
-                    self.assertIsInstance(self.search_list_item, dict)
+                self.search_list_record = self.search_list[random.randint(0, len(self.search_list) - 1)]
+                self.assertIsInstance(self.search_list_record, dict)
+                self.assertIn("rsn", self.search_list_record)
+                self.search_list_record_rsn = self.search_list_record["rsn"]
+                # retrieval of title metadata
+                self.search_list_record_title = self.client.title(self.search_list_record_rsn)
+                if self.search_list_record_title is not None:
+                    self.assertEqual(self.search_list_record_rsn, self.search_list_record_title.get_rsn())
+                    self.search_list_record_barcodes = self.search_list_record_title.get_items_barcode()
+                    if len(self.search_list_record_barcodes) > 0:
+                        self.search_list_record_barcode = self.search_list_record_barcodes[random.randint(0, len(self.search_list_record_barcodes) - 1)]
+                        # retrieval of item metadata
+                        self.search_list_record_response = self.client.item(self.search_list_record_barcode)
+                        if self.search_list_record_response is not None:
+                            self.assertEqual(self.search_list_record_barcode, self.search_list_record_response.get_barcode())
+                        else:
+                            print(f"Search list item {self.search_list_record_barcode} from database {self.db} failed to be retrieved.")
+                    else:
+                        print(f"Search list title {self.search_list_record_rsn} from database {self.db} has no barcode.")
                 else:
-                    print(f"Search list item via database {self.db} is None.")
+                    print(f"Search list title {self.search_list_record_rsn} from database {self.db} failed to be retrieved.")
             else:
                 print(f"Search via database {self.db} returned 0 items.")
 
