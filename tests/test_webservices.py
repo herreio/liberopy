@@ -69,9 +69,9 @@ class LiberoClientTestCase(unittest.TestCase):
                     if len(self.search_list_record_barcodes) > 0:
                         self.search_list_record_barcode = self.search_list_record_barcodes[random.randint(0, len(self.search_list_record_barcodes) - 1)]
                         # retrieval of item metadata
-                        self.search_list_record_response = self.client.item(self.search_list_record_barcode)
-                        if self.search_list_record_response is not None:
-                            self.assertEqual(self.search_list_record_barcode, self.search_list_record_response.get_barcode())
+                        self.search_list_record_item = self.client.item(self.search_list_record_barcode)
+                        if self.search_list_record_item is not None:
+                            self.assertEqual(self.search_list_record_barcode, self.search_list_record_item.get_barcode())
                         else:
                             print(f"Search list item {self.search_list_record_barcode} from database {self.db} failed to be retrieved.")
                     else:
