@@ -63,21 +63,22 @@ class LiberoClientTestCase(unittest.TestCase):
                 self.search_list_record_rsn = self.search_list_record["rsn"]
                 # retrieval of title metadata
                 self.search_list_record_title = self.client.title(self.search_list_record_rsn)
-                if self.search_list_record_title is not None:
+                if self.search_list_record_title is None:
+                    print(f"Search list title {self.search_list_record_rsn} from database {self.db} is None.")
+                else:
                     self.assertEqual(self.search_list_record_rsn, self.search_list_record_title.get_rsn())
                     self.search_list_record_barcodes = self.search_list_record_title.get_items_barcode()
+                    self.assertIsInstance(self.search_list_record_barcodes, list)
                     if len(self.search_list_record_barcodes) > 0:
                         self.search_list_record_barcode = self.search_list_record_barcodes[random.randint(0, len(self.search_list_record_barcodes) - 1)]
                         # retrieval of item metadata
                         self.search_list_record_item = self.client.item(self.search_list_record_barcode)
-                        if self.search_list_record_item is not None:
-                            self.assertEqual(self.search_list_record_barcode, self.search_list_record_item.get_barcode())
+                        if self.search_list_record_item is None:
+                            print(f"Search list item {self.search_list_record_barcode} from database {self.db} is None.")
                         else:
-                            print(f"Search list item {self.search_list_record_barcode} from database {self.db} failed to be retrieved.")
+                            self.assertEqual(self.search_list_record_barcode, self.search_list_record_item.get_barcode())
                     else:
                         print(f"Search list title {self.search_list_record_rsn} from database {self.db} has no barcode.")
-                else:
-                    print(f"Search list title {self.search_list_record_rsn} from database {self.db} failed to be retrieved.")
             else:
                 print(f"Search via database {self.db} returned 0 items.")
 
