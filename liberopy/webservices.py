@@ -360,7 +360,7 @@ class CatalogueSearcher(ServicePackage):
         self.logger.info("Fetch title with RSN {0}.".format(rsn))
         response = self.soap_request(url, post=xmlparser.Title)
         if response is not None and (
-                response.elem("searchResultItems")
+                response.elem("searchResultItems") is not None
                 and len(response.elem("searchResultItems")) > 4):
             return response
 
