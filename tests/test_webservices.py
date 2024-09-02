@@ -5,6 +5,9 @@ import liberopy
 
 connections = {
 "BAL": "https://bacharchiv.libero-is.de/libero",
+"BVS": "https://begavalley.libero.com.au/libero",
+"BHL": "https://brokenhill.libero.com.au/libero",
+"GLI": "https://glen-innes.libero.com.au/libero",
 "HGB": "https://hgb.libero-is.de/libero",
 "ZUR": "https://opac.kunsthaus.ch/libero",
 "PPP": "https://catalogue.mnclibrary.org.au/libero",

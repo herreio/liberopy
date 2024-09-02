@@ -108,9 +108,12 @@ branches = libero.branches()
 According to the company’s [website](https://libero.com.au/company/why-libero/), the library management system Libero has more than 2,500 users worldwide. Some examples of users can be found in the following list.
 
 - [Bach Archiv Leipzig](https://bacharchiv.libero-is.de/libero/WebOpac.cls)
+- [Bega Valley Shire Library](https://begavalley.libero.com.au/libero/WebOpac.cls)
+- [Broken Hill City Library](https://brokenhill.libero.com.au/libero/WebOpac.cls)
+- [The Glen Innes Severn Public Library](https://glen-innes.libero.com.au/libero/WebOpac.cls)
 - [Hochschule für Grafik und Buchkunst Leipzig](https://hgb.libero-is.de/libero/WebOpac.cls)
 - [Kunsthaus Zürich](https://opac.kunsthaus.ch/libero/WebOpac.cls)
-- [Mid-North Library Co-Operative](https://catalogue.mnclibrary.org.au/libero/WebOpac.cls)
+- [Mid North Coast Co-Operative Library Service](https://catalogue.mnclibrary.org.au/libero/WebOpac.cls)
 - [Parlamentsbibliothek Bern](https://biblio.parlament.ch/libero/WebOpac.cls)
 - [Richmond – Upper Clarence Regional Library](https://richmondvalley.libero.com.au/libero/WebOpac.cls)
 - [Stadtbibliothek Saarbrücken](https://opac.saarbruecken.de/libero/WebOpac.cls)
