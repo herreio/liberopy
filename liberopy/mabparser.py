@@ -57,29 +57,36 @@ class MabTitle:
         if isinstance(fields, dict) and name in fields:
             return fields[name]
 
-    def get_value(self, fname, find=None):
+    def get_value(self, fname, find=None, fseq=None):
         field = self.get_field(fname)
         if isinstance(field, list):
             for subfield in field:
-                if "indicator" in subfield:
+                if "indicator" in subfield and \
+                        "sequence" in subfield and \
+                            "value" in subfield:
+                    if find is None and fseq is None:
+                        return {"ind": subfield["indicator"],
+                                "seq": subfield["sequence"],
+                                "val": subfield["value"]}
                     ind = subfield["indicator"]
-                    if "value" in subfield:
-                        if find is None:
-                            return {"ind": ind, "val": subfield["value"]}
-                        if ind == find:
-                            return subfield["value"]
+                    seq = subfield["sequence"]
+                    if (find is None and seq == fseq) or \
+                            (fseq is None and ind == find) or \
+                                (ind == find and seq == fseq):
+                        return subfield["value"]
 
     def get_values(self, fname, reduce=True):
         field = self.get_field(fname)
         if isinstance(field, list):
             values = []
             for subfield in field:
-                sf = {}
-                if "indicator" in subfield:
-                    sf["ind"] = subfield["indicator"]
-                if "value" in subfield:
-                    sf["val"] = subfield["value"]
-                values.append(sf)
+                if "indicator" in subfield and \
+                        "sequence" in subfield and \
+                            "value" in subfield:
+                    values.append(
+                        {"ind": subfield["indicator"],
+                         "seq": subfield["sequence"],
+                         "val": subfield["value"]})
             if len(values) > 0:
                 if reduce and len(values) == 1:
                     values = values[0]
@@ -220,7 +227,7 @@ class MabTitle:
           Indikator:
           a     = DNB
         """
-        return self.get_value("025", "a")
+        return self.get_value("025", find="a")
 
     def get_loc_id(self):
         """
@@ -232,7 +239,7 @@ class MabTitle:
           Indikator:
           l     = LoC
         """
-        return self.get_value("025", "l")
+        return self.get_value("025", find="l")
 
     def get_oclc_id(self):
         """
@@ -244,7 +251,7 @@ class MabTitle:
           Indikator:
           o     = OCLC
         """
-        return self.get_value("025", "o")
+        return self.get_value("025", find="o")
 
     def get_zdb_id(self):
         """
@@ -256,7 +263,7 @@ class MabTitle:
           Indikator:
           z     = ZDB
         """
-        return self.get_value("025", "z")
+        return self.get_value("025", find="z")
 
     def get_regional_ids(self):
         """
@@ -292,7 +299,7 @@ class MabTitle:
           Indikator:
           f     = Suedwestdeutscher Bibliotheksverbund
         """
-        return self.get_value("026", "f")
+        return self.get_value("026", find="f")
 
     def get_kxp_id(self):
         """
@@ -304,7 +311,7 @@ class MabTitle:
           Indikator:
           k     = K10plus
         """
-        return self.get_value("026", "k")
+        return self.get_value("026", find="k")
 
     def get_local_ids(self):
         """
@@ -609,7 +616,7 @@ class MabTitle:
           Indikator:
           a     = Internationale Artikelnummer (EAN)
         """
-        return self.get_value("553", "a")
+        return self.get_value("553", find="a")
 
     def get_upc(self):
         """
