@@ -26,10 +26,14 @@ db_choices_max_i = len(db_choices) - 1
 db_chosen = db_choices[random.randint(0, db_choices_max_i)]
 print(f"The database {db_chosen} was chosen for the tests ----------------------------\n")
 
+search_query = "Harry Potter"
+
+
 class LiberoClientTestCase(unittest.TestCase):
 
     def setUp(self):
         self.db = db_chosen
+        self.q = search_query
         self.client = liberopy.WebServices(
             connections[db_chosen],
             db=db_chosen,
@@ -42,21 +46,30 @@ class LiberoClientTestCase(unittest.TestCase):
     def test_newitems(self):
         self.newitems = self.client.newitems()
         if self.newitems is None:
-            print(f"Newitems via database {self.db} is None.")
+            pass
         else:
             self.assertIsInstance(self.newitems.get_total(), int)
             self.newitems_list = self.newitems.get_list()
             self.assertIsInstance(self.newitems_list, list)
 
+    def test_search_count(self):
+        self.search_count = self.client.search_count(self.q)
+        if self.search_count is None:
+            pass
+        else:
+            self.assertIsInstance(self.search_count, int)
+
     def test_search_title_item(self):
-        self.search = self.client.search("Harry Potter")
+        self.search = self.client.search(self.q)
         if self.search is None:
-            print(f"Search via database {self.db} is None.")
+            pass
         else:
             self.assertIsInstance(self.search.get_total(), int)
             self.search_list = self.search.get_list()
             self.assertIsInstance(self.search_list, list)
-            if len(self.search_list) > 0:
+            if len(self.search_list) < 1:
+                print(f"Search for query {self.q} via database {self.db} returned 0 items.")
+            else:
                 self.search_list_record = self.search_list[random.randint(0, len(self.search_list) - 1)]
                 self.assertIsInstance(self.search_list_record, dict)
                 self.assertIn("rsn", self.search_list_record)
@@ -64,30 +77,21 @@ class LiberoClientTestCase(unittest.TestCase):
                 # retrieval of title metadata
                 self.search_list_record_title = self.client.title(self.search_list_record_rsn)
                 if self.search_list_record_title is None:
-                    print(f"Search list title {self.search_list_record_rsn} from database {self.db} is None.")
+                    pass
                 else:
                     self.assertEqual(self.search_list_record_rsn, self.search_list_record_title.get_rsn())
                     self.search_list_record_barcodes = self.search_list_record_title.get_items_barcode()
                     self.assertIsInstance(self.search_list_record_barcodes, list)
-                    if len(self.search_list_record_barcodes) > 0:
+                    if len(self.search_list_record_barcodes) < 1:
+                        print(f"Title with RSN {self.search_list_record_rsn} from database {self.db} has no barcode.")
+                    else:
                         self.search_list_record_barcode = self.search_list_record_barcodes[random.randint(0, len(self.search_list_record_barcodes) - 1)]
                         # retrieval of item metadata
                         self.search_list_record_item = self.client.item(self.search_list_record_barcode)
                         if self.search_list_record_item is None:
-                            print(f"Search list item {self.search_list_record_barcode} from database {self.db} is None.")
+                            pass
                         else:
                             self.assertEqual(self.search_list_record_barcode, self.search_list_record_item.get_barcode())
-                    else:
-                        print(f"Search list title {self.search_list_record_rsn} from database {self.db} has no barcode.")
-            else:
-                print(f"Search via database {self.db} returned 0 items.")
-
-    def test_search_count(self):
-        self.search_count = self.client.search_count("Harry Potter")
-        if self.search_count is None:
-            print(f"Search count via database {self.db} is None.")
-        else:
-            self.assertIsInstance(self.search_count, int)
 
 
 if __name__ == '__main__':
