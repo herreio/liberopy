@@ -3,22 +3,38 @@ import random
 import unittest
 import liberopy
 
+connections_mab = {
+    "BAL": "https://bacharchiv.libero-is.de/libero",
+    "HGB": "https://hgb.libero-is.de/libero",
+    "LHS": "https://heinsberg.libero-is.de/libero"
+}
+
+connections_marc = {
+    "BVS": "https://begavalley.libero.com.au/libero",
+    "BHL": "https://brokenhill.libero.com.au/libero",
+    "GLI": "https://glen-innes.libero.com.au/libero",
+    "PPP": "https://catalogue.mnclibrary.org.au/libero",
+    "CAS": "https://richmondvalley.libero.com.au/libero",
+    "UPS": "https://webopacups.urbe.it/libero",
+    "UOM": "https://library.uom.ac.mu/libero"  # v6.3
+}
+
+connections_marc_ch = {
+    "ZUR": "https://opac.kunsthaus.ch/libero",
+    "PDB": "https://biblio.parlament.ch/libero"
+}
+
+connections_marc_de = {
+    "COT": "https://web-opac.bibliothek-cottbus.de/libero",
+    "KON": "https://libero.ub.uni-konstanz.de/libero",
+    "SAR": "https://opac.saarbruecken.de/libero"
+}
+
 connections = {
-#"BAL": "https://bacharchiv.libero-is.de/libero",
-"BVS": "https://begavalley.libero.com.au/libero",
-"BHL": "https://brokenhill.libero.com.au/libero",
-"GLI": "https://glen-innes.libero.com.au/libero",
-"HGB": "https://hgb.libero-is.de/libero",
-#"ZUR": "https://opac.kunsthaus.ch/libero",
-"PPP": "https://catalogue.mnclibrary.org.au/libero",
-#"PDB": "https://biblio.parlament.ch/libero",
-"CAS": "https://richmondvalley.libero.com.au/libero",
-"SAR": "https://opac.saarbruecken.de/libero",
-"LHS": "https://heinsberg.libero-is.de/libero",
-"COT": "https://web-opac.bibliothek-cottbus.de/libero",
-"UPS": "https://webopacups.urbe.it/libero",
-"KON": "https://libero.ub.uni-konstanz.de/libero"#,
-#"UOM": "https://library.uom.ac.mu/libero"
+    #**connections_mab,
+    #**connections_marc,
+    #**connections_marc_ch,
+    **connections_marc_de
 }
 
 db_choices = list(connections.keys())
@@ -26,7 +42,7 @@ db_choices_max_i = len(db_choices) - 1
 db_chosen = db_choices[random.randint(0, db_choices_max_i)]
 print(f"The database {db_chosen} was chosen for the tests ----------------------------\n")
 
-search_query = "Harry Potter"
+search_query = "har"
 
 
 class LiberoClientTestCase(unittest.TestCase):
