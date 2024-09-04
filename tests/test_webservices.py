@@ -31,9 +31,9 @@ connections_marc_de = {
 }
 
 connections = {
-    #**connections_mab,
-    #**connections_marc,
-    #**connections_marc_ch,
+    **connections_mab,
+    **connections_marc,
+    **connections_marc_ch,
     **connections_marc_de
 }
 
