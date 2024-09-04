@@ -43,7 +43,7 @@ class LiberoClientTestCase(unittest.TestCase):
     def test_init(self):
         self.assertEqual(self.client.domain, connections[self.db])
 
-    def test_newitems(self):
+    def test_newitems_title_item(self):
         self.newitems = self.client.newitems()
         if self.newitems is None:
             pass
@@ -51,6 +51,31 @@ class LiberoClientTestCase(unittest.TestCase):
             self.assertIsInstance(self.newitems.get_total(), int)
             self.newitems_list = self.newitems.get_list()
             self.assertIsInstance(self.newitems_list, list)
+            if len(self.newitems_list) < 1:
+                print(f"Search newitems via database {self.db} returned 0 items.")
+            else:
+                self.newitems_list_record = self.newitems_list[random.randint(0, len(self.newitems_list) - 1)]
+                self.assertIsInstance(self.newitems_list_record, dict)
+                self.assertIn("rsn", self.newitems_list_record)
+                self.newitems_list_record_rsn = self.newitems_list_record["rsn"]
+                # retrieval of title metadata
+                self.newitems_list_record_title = self.client.title(self.newitems_list_record_rsn)
+                if self.newitems_list_record_title is None:
+                    pass
+                else:
+                    self.assertEqual(self.newitems_list_record_rsn, self.newitems_list_record_title.get_rsn())
+                    self.newitems_list_record_barcodes = self.newitems_list_record_title.get_items_barcode()
+                    self.assertIsInstance(self.newitems_list_record_barcodes, list)
+                    if len(self.newitems_list_record_barcodes) < 1:
+                        print(f"Title with RSN {self.newitems_list_record_rsn} from database {self.db} has no barcode.")
+                    else:
+                        self.newitems_list_record_barcode = self.newitems_list_record_barcodes[random.randint(0, len(self.newitems_list_record_barcodes) - 1)]
+                        # retrieval of item metadata
+                        self.newitems_list_record_item = self.client.item(self.newitems_list_record_barcode)
+                        if self.newitems_list_record_item is None:
+                            pass
+                        else:
+                            self.assertEqual(self.newitems_list_record_barcode, self.newitems_list_record_item.get_barcode())
 
     def test_search_count(self):
         self.search_count = self.client.search_count(self.q)
