@@ -56,8 +56,13 @@ class LiberoClientTestCase(unittest.TestCase):
             loglevel=logging.WARNING
         )
 
+class LiberoClientInitTestCase(LiberoClientTestCase):
+
     def test_init(self):
         self.assertEqual(self.client.domain, connections[self.db])
+
+
+class LiberoClientNewitemsTestCase(LiberoClientTestCase):
 
     def test_newitems_title_item(self):
         self.newitems = self.client.newitems()
@@ -103,6 +108,9 @@ class LiberoClientTestCase(unittest.TestCase):
                                 bcs = self.client.rid2bc(self.newitems_list_record_rid)
                                 self.assertIsInstance(bcs, list)
                                 self.assertIn(self.newitems_list_record_barcode, bcs)
+
+
+class LiberoClientSearchTestCase(LiberoClientTestCase):
 
     def test_search_count(self):
         self.search_count = self.client.search_count(self.q)
