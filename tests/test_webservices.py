@@ -55,6 +55,7 @@ class LiberoClientTestCase(unittest.TestCase):
             db=db_chosen,
             loglevel=logging.WARNING
         )
+        self.format = "MAB2" if db_chosen in connections_mab else "MARC21"
 
 
 class LiberoClientInitTestCase(LiberoClientTestCase):
