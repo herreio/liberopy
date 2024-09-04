@@ -76,6 +76,17 @@ class LiberoClientTestCase(unittest.TestCase):
                             pass
                         else:
                             self.assertEqual(self.newitems_list_record_barcode, self.newitems_list_record_item.get_barcode())
+                            self.newitems_list_record_rid = self.newitems_list_record_item.get_rid()
+                            if self.newitems_list_record_rid is None:
+                                print(f"Item with barcode {self.newitems_list_record_barcode} from database {self.db} has no RID.")
+                            else:
+                                # retrieval of RSN via RID
+                                rsn = self.client.rid2rsn(self.newitems_list_record_rid)
+                                self.assertEqual(self.newitems_list_record_rsn, rsn)
+                                # retrieval of barcodes via RID
+                                bcs = self.client.rid2bc(self.newitems_list_record_rid)
+                                self.assertIsInstance(bcs, list)
+                                self.assertIn(self.newitems_list_record_barcode, bcs)
 
     def test_search_count(self):
         self.search_count = self.client.search_count(self.q)
@@ -117,6 +128,17 @@ class LiberoClientTestCase(unittest.TestCase):
                             pass
                         else:
                             self.assertEqual(self.search_list_record_barcode, self.search_list_record_item.get_barcode())
+                            self.search_list_record_rid = self.search_list_record_item.get_rid()
+                            if self.search_list_record_rid is None:
+                                print(f"Item with barcode {self.search_list_record_barcode} from database {self.db} has no RID.")
+                            else:
+                                # retrieval of RSN via RID
+                                rsn = self.client.rid2rsn(self.search_list_record_rid)
+                                self.assertEqual(self.search_list_record_rsn, rsn)
+                                # retrieval of barcodes via RID
+                                bcs = self.client.rid2bc(self.search_list_record_rid)
+                                self.assertIsInstance(bcs, list)
+                                self.assertIn(self.search_list_record_barcode, bcs)
 
 
 if __name__ == '__main__':
