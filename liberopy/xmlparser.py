@@ -219,9 +219,9 @@ class TitleMab(ServiceResponse):
             if mab_data_b64 is not None:
                 mab_data_plain = base64.b64decode(mab_data_b64.text).decode("utf-8")
             if tag == "###":
-                mab_data["_type"] = mab_data_plain[23]
-                mab_data["_status"] = mab_data_plain[5]
-                mab_data["_version"] = mab_data_plain[6:10]
+                mab_data["_type"] = mab_data_plain[23] if len(mab_data_plain) > 23 else None
+                mab_data["_status"] = mab_data_plain[5] if len(mab_data_plain) > 5 else None
+                mab_data["_version"] = mab_data_plain[6:10] if len(mab_data_plain) > 9 else None
                 mab_data["_leader"] = mab_data_plain
                 continue
             else:
