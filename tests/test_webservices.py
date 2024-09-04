@@ -56,6 +56,7 @@ class LiberoClientTestCase(unittest.TestCase):
             loglevel=logging.WARNING
         )
 
+
 class LiberoClientInitTestCase(LiberoClientTestCase):
 
     def test_init(self):
@@ -69,7 +70,8 @@ class LiberoClientNewitemsTestCase(LiberoClientTestCase):
         if self.newitems is None:
             pass
         else:
-            self.assertIsInstance(self.newitems.get_total(), int)
+            self.newitems_total = self.newitems.get_total()
+            self.assertIsInstance(self.newitems_total, int)
             self.newitems_list = self.newitems.get_list()
             self.assertIsInstance(self.newitems_list, list)
             if len(self.newitems_list) < 1:
@@ -112,19 +114,20 @@ class LiberoClientNewitemsTestCase(LiberoClientTestCase):
 
 class LiberoClientSearchTestCase(LiberoClientTestCase):
 
-    def test_search_count(self):
-        self.search_count = self.client.search_count(self.q)
-        if self.search_count is None:
-            pass
-        else:
-            self.assertIsInstance(self.search_count, int)
-
     def test_search_title_item(self):
         self.search = self.client.search(self.q)
         if self.search is None:
             pass
         else:
-            self.assertIsInstance(self.search.get_total(), int)
+            self.search_total = self.search.get_total()
+            self.assertIsInstance(self.search_total, int)
+            # retrieval of search count
+            self.search_count = self.client.search_count(self.q)
+            if self.search_count is None:
+                pass
+            else:
+                self.assertIsInstance(self.search_count, int)
+                self.assertEqual(self.search_count, self.search_total)
             self.search_list = self.search.get_list()
             self.assertIsInstance(self.search_list, list)
             if len(self.search_list) < 1:
