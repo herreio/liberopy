@@ -26,6 +26,7 @@ connections_marc_ch = {
 
 connections_marc_de = {
     "COT": "https://web-opac.bibliothek-cottbus.de/libero",
+    "HBK": "https://opac.hfbk-dresden.de/libero",  # v6.3
     "KON": "https://libero.ub.uni-konstanz.de/libero",
     "SAR": "https://opac.saarbruecken.de/libero"
 }

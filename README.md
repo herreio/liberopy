@@ -111,6 +111,7 @@ According to the company’s [website](https://libero.com.au/company/why-libero/
 - [Bega Valley Shire Library](https://begavalley.libero.com.au/libero/WebOpac.cls)
 - [Broken Hill City Library](https://brokenhill.libero.com.au/libero/WebOpac.cls)
 - [The Glen Innes Severn Public Library](https://glen-innes.libero.com.au/libero/WebOpac.cls)
+- [Hochschule für Bildende Künste Dresden](https://opac.hfbk-dresden.de/libero/WebOpac.cls)
 - [Hochschule für Grafik und Buchkunst Leipzig](https://hgb.libero-is.de/libero/WebOpac.cls)
 - [Kunsthaus Zürich](https://opac.kunsthaus.ch/libero/WebOpac.cls)
 - [Mid North Coast Co-Operative Library Service](https://catalogue.mnclibrary.org.au/libero/WebOpac.cls)
