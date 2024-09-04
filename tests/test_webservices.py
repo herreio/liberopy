@@ -51,11 +51,11 @@ class LiberoClientTestCase(unittest.TestCase):
         self.db = db_chosen
         self.q = search_query
         self.client = liberopy.WebServices(
-            connections[db_chosen],
-            db=db_chosen,
+            connections[self.db],
+            db=self.db,
             loglevel=logging.WARNING
         )
-        self.format = "MAB2" if db_chosen in connections_mab else "MARC21"
+        self.format = "MAB2" if self.db in connections_mab else "MARC21"
 
 
 class LiberoClientInitTestCase(LiberoClientTestCase):
