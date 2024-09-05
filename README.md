@@ -129,5 +129,11 @@ cf. https://duckduckgo.com/?q=libero+webopac / https://www.google.com/search?q=l
 ### Run Tests
 
 ```sh
-python -m unittest
+python -m unittest -v
+```
+
+You can also choose a specific instance via the envrionment variable `LIBEROPY_TEST_DB`.
+
+```sh
+LIBEROPY_TEST_DB="HGB" python -m unittest -v
 ```
