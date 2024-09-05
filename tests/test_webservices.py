@@ -1,3 +1,4 @@
+import os
 import logging
 import random
 import unittest
@@ -33,13 +34,19 @@ connections_marc_de = {
 
 connections = {
     **connections_mab,
-    #**connections_marc,
-    #**connections_marc_ch,
+    **connections_marc,
+    **connections_marc_ch,
     **connections_marc_de
 }
 
-db_choices = list(connections.keys())
-db_chosen = db_choices[random.randint(0, len(db_choices) - 1)]
+try:
+    db_chosen = os.environ["LIBEROPY_TEST_DB"]
+    if db_chosen not in connections:
+        raise KeyError
+except KeyError:
+    db_choices = list(connections.keys())
+    db_chosen = db_choices[random.randint(0, len(db_choices) - 1)]
+
 print(f"The database {db_chosen} was chosen for the tests ----------------------------\n")
 
 search_query = "har"
@@ -73,6 +80,8 @@ class LiberoClientCatalogTestMixin(LiberoClientTestCase):
         self.record = None
         self.record_rsn = None
         self.record_title = None
+        self.record_title_mab = None
+        self.record_title_mab_id = None
         self.record_barcodes = None
         self.record_barcode = None
         self.record_item = None
@@ -89,12 +98,29 @@ class LiberoClientCatalogTestMixin(LiberoClientTestCase):
             pass
         else:
             self.assertEqual(rsn, self.record_title.get_rsn())
+            self.helperTitleData(self.record_title)
             self.record_barcodes = self.record_title.get_items_barcode()
             self.assertIsInstance(self.record_barcodes, list)
             if len(self.record_barcodes) < 1:
                 print(f"Title with RSN {rsn} from database {self.db} has no barcode.")
             else:
                 self.record_barcode = self.record_barcodes[random.randint(0, len(self.record_barcodes) - 1)]
+
+    def helperTitleData(self, tit):
+        if self.format == "MARC21":
+            self.helperTitleMarc(tit)
+        elif self.format == "MAB2":
+            self.helperTitleMab(tit)
+        else:
+            print(f"Format {self.format} is unknown. Please check.")
+
+    def helperTitleMab(self, tit):
+        self.record_title_mab = tit.get_mab_data_items_parser()
+        self.record_title_mab_id = self.record_title_mab.get_id()
+        self.assertIsInstance(self.record_title_mab_id, str)
+
+    def helperTitleMarc(self, tit):
+        pass
 
     def helperItem(self, bc):
         self.record_item = self.client.item(bc)
@@ -169,6 +195,7 @@ class LiberoClientCatalogTestMixin(LiberoClientTestCase):
                 self.record_rsn = self.record["rsn"]
                 if isinstance(self.record_rsn, str):
                     self.helperRecord(self.record_rsn)
+
 
 class LiberoClientNewitemsTestCase(LiberoClientCatalogTestMixin):
 
