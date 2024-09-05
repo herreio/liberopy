@@ -128,11 +128,13 @@ class MabTitle:
           a = Datum der Ersterfassung
           b = Datum der Fremddatenuebernahme
         """
-        find = self.get_date_entered()["ind"]
-        if find == "a":
-            return "Datum der Ersterfassung"
-        elif find == "b":
-            return "Datum der Fremddatenuebernahme"
+        date_entered = self.get_date_entered()
+        if isinstance(date_entered, dict) and "ind" in date_entered:
+            date_entered_ind = date_entered["ind"]
+            if date_entered_ind == "a":
+                return "Datum der Ersterfassung"
+            elif date_entered_ind == "b":
+                return "Datum der Fremddatenuebernahme"
 
     def get_date_entered_date(self):
         """
@@ -141,12 +143,14 @@ class MabTitle:
 
         002       DATUM DER ERSTERFASSUNG / FREMDDATENUEBERNAHME
         """
-        date_entered = self.get_date_entered()["val"]
-        if date_entered is not None and len(date_entered.strip()) == 8:
-            try:
-                return datetime.datetime.strptime(date_entered, "%Y%m%d").date()
-            except ValueError:
-                pass
+        date_entered = self.get_date_entered()
+        if isinstance(date_entered, dict) and "val" in date_entered:
+            date_entered_val = date_entered["val"]
+            if isinstance(date_entered_val, str) and len(date_entered_val.strip()) == 8:
+                try:
+                    return datetime.datetime.strptime(date_entered_val.strip(), "%Y%m%d").date()
+                except ValueError:
+                    pass
 
     def get_date_entered_iso(self):
         """
@@ -178,12 +182,14 @@ class MabTitle:
 
         003       DATUM DER LETZTEN KORREKTUR
         """
-        latest_trans = self.get_latest_trans()["val"]
-        if latest_trans is not None:
-            try:
-                return datetime.datetime.strptime(latest_trans, "%Y%m%d%H%M%S")
-            except ValueError:
-                pass
+        latest_trans = self.get_latest_trans()
+        if isinstance(latest_trans, dict) and "val" in latest_trans:
+            latest_trans_val = latest_trans["val"]
+            if isinstance(latest_trans_val, str) and len(latest_trans_val) == 14:
+                try:
+                    return datetime.datetime.strptime(latest_trans_val.strip(), "%Y%m%d%H%M%S")
+                except ValueError:
+                    pass
 
     def get_latest_trans_iso(self):
         """
@@ -637,4 +643,4 @@ class MabTitle:
         """
         tag = self.get_values("997", reduce=False)
         if isinstance(tag, list):
-            return [t["val"] for t in tag]
+            return [t["val"] for t in tag if isinstance(t, dict) and "val" in t]
