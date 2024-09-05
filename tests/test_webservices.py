@@ -112,6 +112,27 @@ class LiberoClientNewitemsTestCase(LiberoClientTestCase):
                                 bcs = self.client.rid2bc(self.newitems_list_record_rid)
                                 self.assertIsInstance(bcs, list)
                                 self.assertIn(self.newitems_list_record_barcode, bcs)
+                                if self.format == "MARC21":
+                                    # retrieval of marcblock via RID
+                                    self.newitems_list_record_marc = self.client.marcblock(self.newitems_list_record_rid)
+                                    if self.newitems_list_record_marc is None:
+                                        pass
+                                    else:
+                                        self.assertIsInstance(self.newitems_list_record_marc, str)
+                                elif self.format == "MAB2":
+                                    # retrieval of mabblock via RID
+                                    self.newitems_list_record_mab = self.client.mabblock(self.newitems_list_record_rid)
+                                    if self.newitems_list_record_mab is None:
+                                        pass
+                                    else:
+                                        self.assertIsInstance(self.newitems_list_record_mab, str)
+                                        self.newitems_list_record_mabp = self.client.mabplain(self.newitems_list_record_rid)
+                                        if self.newitems_list_record_mabp is None:
+                                            pass
+                                        else:
+                                            self.assertIsInstance(self.newitems_list_record_mabp, str)
+                                else:
+                                    print(f"Format {self.format} is unknown. Please check.")
 
 
 class LiberoClientSearchTestCase(LiberoClientTestCase):
@@ -168,6 +189,27 @@ class LiberoClientSearchTestCase(LiberoClientTestCase):
                                 bcs = self.client.rid2bc(self.search_list_record_rid)
                                 self.assertIsInstance(bcs, list)
                                 self.assertIn(self.search_list_record_barcode, bcs)
+                                if self.format == "MARC21":
+                                    # retrieval of marcblock via RID
+                                    self.search_list_record_marc = self.client.marcblock(self.search_list_record_rid)
+                                    if self.search_list_record_marc is None:
+                                        pass
+                                    else:
+                                        self.assertIsInstance(self.search_list_record_marc, str)
+                                elif self.format == "MAB2":
+                                    # retrieval of mabblock via RID
+                                    self.search_list_record_mab = self.client.mabblock(self.search_list_record_rid)
+                                    if self.search_list_record_mab is None:
+                                        pass
+                                    else:
+                                        self.assertIsInstance(self.search_list_record_mab, str)
+                                        self.search_list_record_mabp = self.client.mabplain(self.search_list_record_rid)
+                                        if self.search_list_record_mabp is None:
+                                            pass
+                                        else:
+                                            self.assertIsInstance(self.search_list_record_mabp, str)
+                                else:
+                                    print(f"Format {self.format} is unknown. Please check.")
 
 
 if __name__ == '__main__':
