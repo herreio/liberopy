@@ -39,8 +39,7 @@ connections = {
 }
 
 db_choices = list(connections.keys())
-db_choices_max_i = len(db_choices) - 1
-db_chosen = db_choices[random.randint(0, db_choices_max_i)]
+db_chosen = db_choices[random.randint(0, len(db_choices) - 1)]
 print(f"The database {db_chosen} was chosen for the tests ----------------------------\n")
 
 search_query = "har"
@@ -50,7 +49,6 @@ class LiberoClientTestCase(unittest.TestCase):
 
     def setUp(self):
         self.db = db_chosen
-        self.q = search_query
         self.client = liberopy.WebServices(
             connections[self.db],
             db=self.db,
@@ -65,151 +63,162 @@ class LiberoClientInitTestCase(LiberoClientTestCase):
         self.assertEqual(self.client.domain, connections[self.db])
 
 
-class LiberoClientNewitemsTestCase(LiberoClientTestCase):
+class LiberoClientCatalogTestMixin(LiberoClientTestCase):
 
-    def test_newitems_title_item(self):
-        self.newitems = self.client.newitems()
-        if self.newitems is None:
+    def setUp(self):
+        super().setUp()
+        self.response = None
+        self.results = None
+        self.total = None
+        self.record = None
+        self.record_rsn = None
+        self.record_title = None
+        self.record_barcodes = None
+        self.record_barcode = None
+        self.record_item = None
+        self.record_rid = None
+        self.record_rsn_via_rid = None
+        self.record_barcodes_via_rid = None
+        self.record_marc = None
+        self.record_mab = None
+        self.record_mabp = None
+
+    def helperTitle(self, rsn):
+        self.record_title = self.client.title(rsn)
+        if self.record_title is None:
             pass
         else:
-            self.newitems_total = self.newitems.get_total()
-            self.assertIsInstance(self.newitems_total, int)
-            self.newitems_list = self.newitems.get_list()
-            self.assertIsInstance(self.newitems_list, list)
-            if len(self.newitems_list) < 1:
-                print(f"Search newitems via database {self.db} returned 0 items.")
+            self.assertEqual(rsn, self.record_title.get_rsn())
+            self.record_barcodes = self.record_title.get_items_barcode()
+            self.assertIsInstance(self.record_barcodes, list)
+            if len(self.record_barcodes) < 1:
+                print(f"Title with RSN {rsn} from database {self.db} has no barcode.")
             else:
-                self.newitems_list_record = self.newitems_list[random.randint(0, len(self.newitems_list) - 1)]
-                self.assertIsInstance(self.newitems_list_record, dict)
-                self.assertIn("rsn", self.newitems_list_record)
-                self.newitems_list_record_rsn = self.newitems_list_record["rsn"]
-                # retrieval of title metadata
-                self.newitems_list_record_title = self.client.title(self.newitems_list_record_rsn)
-                if self.newitems_list_record_title is None:
-                    pass
-                else:
-                    self.assertEqual(self.newitems_list_record_rsn, self.newitems_list_record_title.get_rsn())
-                    self.newitems_list_record_barcodes = self.newitems_list_record_title.get_items_barcode()
-                    self.assertIsInstance(self.newitems_list_record_barcodes, list)
-                    if len(self.newitems_list_record_barcodes) < 1:
-                        print(f"Title with RSN {self.newitems_list_record_rsn} from database {self.db} has no barcode.")
-                    else:
-                        self.newitems_list_record_barcode = self.newitems_list_record_barcodes[random.randint(0, len(self.newitems_list_record_barcodes) - 1)]
-                        # retrieval of item metadata
-                        self.newitems_list_record_item = self.client.item(self.newitems_list_record_barcode)
-                        if self.newitems_list_record_item is None:
-                            pass
-                        else:
-                            self.assertEqual(self.newitems_list_record_barcode, self.newitems_list_record_item.get_barcode())
-                            self.newitems_list_record_rid = self.newitems_list_record_item.get_rid()
-                            if self.newitems_list_record_rid is None:
-                                print(f"Item with barcode {self.newitems_list_record_barcode} from database {self.db} has no RID.")
-                            else:
-                                # retrieval of RSN via RID
-                                rsn = self.client.rid2rsn(self.newitems_list_record_rid)
-                                self.assertEqual(self.newitems_list_record_rsn, rsn)
-                                # retrieval of barcodes via RID
-                                bcs = self.client.rid2bc(self.newitems_list_record_rid)
-                                self.assertIsInstance(bcs, list)
-                                self.assertIn(self.newitems_list_record_barcode, bcs)
-                                if self.format == "MARC21":
-                                    # retrieval of marcblock via RID
-                                    self.newitems_list_record_marc = self.client.marcblock(self.newitems_list_record_rid)
-                                    if self.newitems_list_record_marc is None:
-                                        pass
-                                    else:
-                                        self.assertIsInstance(self.newitems_list_record_marc, str)
-                                elif self.format == "MAB2":
-                                    # retrieval of mabblock via RID
-                                    self.newitems_list_record_mab = self.client.mabblock(self.newitems_list_record_rid)
-                                    if self.newitems_list_record_mab is None:
-                                        pass
-                                    else:
-                                        self.assertIsInstance(self.newitems_list_record_mab, str)
-                                        self.newitems_list_record_mabp = self.client.mabplain(self.newitems_list_record_rid)
-                                        if self.newitems_list_record_mabp is None:
-                                            pass
-                                        else:
-                                            self.assertIsInstance(self.newitems_list_record_mabp, str)
-                                else:
-                                    print(f"Format {self.format} is unknown. Please check.")
+                self.record_barcode = self.record_barcodes[random.randint(0, len(self.record_barcodes) - 1)]
 
-
-class LiberoClientSearchTestCase(LiberoClientTestCase):
-
-    def test_search_title_item(self):
-        self.search = self.client.search(self.q)
-        if self.search is None:
+    def helperItem(self, bc):
+        self.record_item = self.client.item(bc)
+        if self.record_item is None:
             pass
         else:
-            self.search_total = self.search.get_total()
-            self.assertIsInstance(self.search_total, int)
-            # retrieval of search count
-            self.search_count = self.client.search_count(self.q)
-            if self.search_count is None:
+            self.assertEqual(bc, self.record_item.get_barcode())
+            self.record_rid = self.record_item.get_rid()
+            if self.record_rid is None:
+                print(f"Item with barcode {bc} from database {self.db} has no RID.")
+
+    def helperRid2Rsn(self, rid):
+        self.record_rsn_via_rid = self.client.rid2rsn(rid)
+        if self.record_rsn_via_rid is None:
+            pass
+        else:
+            self.assertIsInstance(self.record_rsn_via_rid, str)
+            self.assertEqual(self.record_rsn, self.record_rsn_via_rid)
+
+    def helperRid2Bc(self, rid):
+        self.record_barcodes_via_rid = self.client.rid2bc(rid)
+        if self.record_barcodes_via_rid is None:
+            pass
+        else:
+            self.assertIsInstance(self.record_barcodes_via_rid, list)
+            self.assertIn(self.record_barcode, self.record_barcodes_via_rid)
+
+    def helperBlock(self, rid):
+        if self.format == "MARC21":
+            self.helperMarcBlock(rid)
+        elif self.format == "MAB2":
+            self.helperMabBlock(rid)
+        else:
+            print(f"Format {self.format} is unknown. Please check.")
+
+    def helperMarcBlock(self, rid):
+        self.record_marc = self.client.marcblock(rid)
+        if self.record_marc is None:
+            pass
+        else:
+            self.assertIsInstance(self.record_marc, str)
+
+    def helperMabBlock(self, rid):
+        self.record_mab = self.client.mabblock(rid)
+        if self.record_mab is None:
+            pass
+        else:
+            self.assertIsInstance(self.record_mab, str)
+            self.record_mabp = self.client.mabplain(rid)
+            if self.record_mabp is None:
                 pass
             else:
-                self.assertIsInstance(self.search_count, int)
-                self.assertEqual(self.search_count, self.search_total)
-            self.search_list = self.search.get_list()
-            self.assertIsInstance(self.search_list, list)
-            if len(self.search_list) < 1:
-                print(f"Search for query {self.q} via database {self.db} returned 0 items.")
+                self.assertIsInstance(self.record_mabp, str)
+
+    def helperRecord(self, rsn):
+        self.helperTitle(rsn)
+        if self.record_barcode is not None:
+            self.helperItem(self.record_barcode)
+            if self.record_rid is not None:
+                self.helperRid2Rsn(self.record_rid)
+                self.helperRid2Bc(self.record_rid)
+                self.helperBlock(self.record_rid)
+
+    def helperResults(self):
+        if isinstance(self.results, list):
+            if len(self.results) < 1:
+                print(f"Query via database {self.db} returned 0 records.")
             else:
-                self.search_list_record = self.search_list[random.randint(0, len(self.search_list) - 1)]
-                self.assertIsInstance(self.search_list_record, dict)
-                self.assertIn("rsn", self.search_list_record)
-                self.search_list_record_rsn = self.search_list_record["rsn"]
-                # retrieval of title metadata
-                self.search_list_record_title = self.client.title(self.search_list_record_rsn)
-                if self.search_list_record_title is None:
-                    pass
-                else:
-                    self.assertEqual(self.search_list_record_rsn, self.search_list_record_title.get_rsn())
-                    self.search_list_record_barcodes = self.search_list_record_title.get_items_barcode()
-                    self.assertIsInstance(self.search_list_record_barcodes, list)
-                    if len(self.search_list_record_barcodes) < 1:
-                        print(f"Title with RSN {self.search_list_record_rsn} from database {self.db} has no barcode.")
-                    else:
-                        self.search_list_record_barcode = self.search_list_record_barcodes[random.randint(0, len(self.search_list_record_barcodes) - 1)]
-                        # retrieval of item metadata
-                        self.search_list_record_item = self.client.item(self.search_list_record_barcode)
-                        if self.search_list_record_item is None:
-                            pass
-                        else:
-                            self.assertEqual(self.search_list_record_barcode, self.search_list_record_item.get_barcode())
-                            self.search_list_record_rid = self.search_list_record_item.get_rid()
-                            if self.search_list_record_rid is None:
-                                print(f"Item with barcode {self.search_list_record_barcode} from database {self.db} has no RID.")
-                            else:
-                                # retrieval of RSN via RID
-                                rsn = self.client.rid2rsn(self.search_list_record_rid)
-                                self.assertEqual(self.search_list_record_rsn, rsn)
-                                # retrieval of barcodes via RID
-                                bcs = self.client.rid2bc(self.search_list_record_rid)
-                                self.assertIsInstance(bcs, list)
-                                self.assertIn(self.search_list_record_barcode, bcs)
-                                if self.format == "MARC21":
-                                    # retrieval of marcblock via RID
-                                    self.search_list_record_marc = self.client.marcblock(self.search_list_record_rid)
-                                    if self.search_list_record_marc is None:
-                                        pass
-                                    else:
-                                        self.assertIsInstance(self.search_list_record_marc, str)
-                                elif self.format == "MAB2":
-                                    # retrieval of mabblock via RID
-                                    self.search_list_record_mab = self.client.mabblock(self.search_list_record_rid)
-                                    if self.search_list_record_mab is None:
-                                        pass
-                                    else:
-                                        self.assertIsInstance(self.search_list_record_mab, str)
-                                        self.search_list_record_mabp = self.client.mabplain(self.search_list_record_rid)
-                                        if self.search_list_record_mabp is None:
-                                            pass
-                                        else:
-                                            self.assertIsInstance(self.search_list_record_mabp, str)
-                                else:
-                                    print(f"Format {self.format} is unknown. Please check.")
+                self.record = self.results[random.randint(0, len(self.results) - 1)]
+                self.assertIsInstance(self.record, dict)
+                self.assertIn("rsn", self.record)
+                self.record_rsn = self.record["rsn"]
+                if isinstance(self.record_rsn, str):
+                    self.helperRecord(self.record_rsn)
+
+class LiberoClientNewitemsTestCase(LiberoClientCatalogTestMixin):
+
+    def setUp(self):
+        super().setUp()
+
+    def helperNewitems(self):
+        self.response = self.client.newitems()
+        if self.response is None:
+            pass
+        else:
+            self.total = self.response.get_total()
+            self.assertIsInstance(self.total, int)
+            self.results = self.response.get_list()
+            self.assertIsInstance(self.results, list)
+            self.helperResults()
+
+    def test_via_newitems(self):
+        self.helperNewitems()
+
+
+class LiberoClientSearchTestCase(LiberoClientCatalogTestMixin):
+
+    def setUp(self):
+        super().setUp()
+        self.q = search_query
+        self.count = None
+
+    def helperSearch(self):
+        self.response = self.client.search(self.q)
+        if self.response is None:
+            pass
+        else:
+            self.total = self.response.get_total()
+            self.assertIsInstance(self.total, int)
+            self.results = self.response.get_list()
+            self.assertIsInstance(self.results, list)
+            self.helperResults()
+
+    def helperSearchCount(self):
+        self.count = self.client.search_count(self.q)
+        if self.count is None:
+            pass
+        else:
+            self.assertIsInstance(self.count, int)
+            self.assertEqual(self.count, self.total)
+
+    def test_via_search(self):
+        self.helperSearch()
+        self.helperSearchCount()
 
 
 if __name__ == '__main__':
