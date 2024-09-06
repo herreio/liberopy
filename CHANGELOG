@@ -1,3 +1,12 @@
+2024-09-06
+
+- add tests for webservices
+- add support for Marc data
+- fix FutureWarning from ElementTree
+- prevent IndexError in TitleMab
+- prevent TypeError in MabTitle
+- parse sequence in MabTitle
+
 2023-09-06
 
 - add OrderLineInformation method get_internal_notes

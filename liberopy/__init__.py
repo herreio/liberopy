@@ -4,7 +4,7 @@
 """
 
 __author__ = "Donatus Herre <donatus.herre@slub-dresden.de>"
-__version__ = "2023.9.6"
+__version__ = "2024.9.6"
 __license__ = "GPLv3"
 
 from . import xmlparser
