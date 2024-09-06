@@ -215,6 +215,7 @@ class TitleMarc(ServiceResponse):
             "_fields": {}
         }
         tag_pattern = self.ns("tag")
+        sequence_pattern = self.ns("seq")
         indicator_pattern = self.ns("indicator")
         subfield_pattern = self.ns("subfield")
         marc_data_b64_pattern = self.ns("tagData")
@@ -227,11 +228,13 @@ class TitleMarc(ServiceResponse):
             if tag not in marc_data["_fields"]:
                 marc_data["_fields"][tag] = []
             tag_data = marc_data["_fields"][tag]
+            sequence = marc_elem.find(sequence_pattern).text
             indicator = marc_elem.find(indicator_pattern).text
             indicator1 = indicator[1:2]
             indicator2 = indicator[2:3]
             subfield = marc_elem.find(subfield_pattern).text
             tag_data.append({
+                "sequence": int(sequence),
                 "indicator": indicator,
                 "indicator1": indicator1 if not tag.startswith("00") else None,
                 "indicator2": indicator2 if not tag.startswith("00") else None,
