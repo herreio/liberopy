@@ -92,6 +92,7 @@ class LiberoClientCatalogTestMixin(LiberoClientTestCase):
         self.record_rsn_via_rid = None
         self.record_barcodes_via_rid = None
         self.record_marc = None
+        self.record_marcp = None
         self.record_mab = None
         self.record_mabp = None
 
@@ -167,6 +168,11 @@ class LiberoClientCatalogTestMixin(LiberoClientTestCase):
             pass
         else:
             self.assertIsInstance(self.record_marc, str)
+            self.record_marcp = self.client.marcplain(rid)
+            if self.record_marcp is None:
+                pass
+            else:
+                self.assertIsInstance(self.record_marcp, str)
 
     def helperMabBlock(self, rid):
         self.record_mab = self.client.mabblock(rid)
