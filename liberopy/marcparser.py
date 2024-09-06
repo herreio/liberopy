@@ -95,8 +95,8 @@ class MarcTitle:
         field = self.get_value("008")
         if isinstance(field, dict) and "val" in field:
             field_val = field["val"]
-            if isinstance(field_val, str) and len(field_val) > 6:
-                return field_val[0:6]
+            if isinstance(field_val, str):
+                return field_val[:6]
 
     def get_date_entered_date(self):
         """
@@ -108,7 +108,7 @@ class MarcTitle:
         Field has no indicators or subfield codes; the data elements are positionally defined...
         """
         date_entered = self.get_date_entered()
-        if isinstance(date_entered, str) and len(date_entered) == 6:
+        if isinstance(date_entered, str):
             try:
                 return datetime.datetime.strptime(date_entered, "%y%m%d").date()
             except ValueError:
