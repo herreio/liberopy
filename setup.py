@@ -13,5 +13,5 @@ setuptools.setup(
     license=open("LICENSE").read(),
     url="https://github.com/herreio/liberopy",
     packages=["liberopy"],
-    install_requires=["requests", "lxml", "python-dateutil"],
+    install_requires=["requests", "lxml", "python-dateutil", "pymarc"],
 )

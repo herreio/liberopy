@@ -6,6 +6,7 @@ Client classes for the Libero Web Services SOAP API
 import atexit
 import logging
 import requests
+import pymarc
 
 from . import __version__, xmlparser
 
@@ -88,7 +89,10 @@ class WebServices:
         return self.OnlineCatalogue.marc_block(rid)
 
     def marcplain(self, rid):
-        return self.OnlineCatalogue.marc_block(rid)
+        return self.OnlineCatalogue.marc_plain(rid)
+
+    def marcobject(self, rid):
+        return self.OnlineCatalogue.marc_object(rid)
 
     def itemdetails(self, barcode):
         if self.token is not None:
@@ -483,10 +487,15 @@ class OnlineCatalogue(ServicePackage):
     def marc_plain(self, rid):
         marc_block = self.marc_block(rid)
         if isinstance(marc_block, str):
-            marc_block = marc_block.replace("&#x1D;", "")
-            marc_block = marc_block.replace("&#x1E;", "\n")
-            marc_block = marc_block.replace("&#x1F;", "\n")
-            return marc_block.strip("\n")
+            marc_block = marc_block.replace("&#x1D;", chr(0x1D))    # END OF RECORD
+            marc_block = marc_block.replace("&#x1E;", chr(0x1E))    # END OF FIELD
+            marc_block = marc_block.replace("&#x1F;", chr(0x1F))    # SUBFIELD INDICATOR
+            return marc_block
+
+    def marc_object(self, rid):
+        marc_plain = self.marc_plain(rid)
+        if isinstance(marc_plain, str):
+            return pymarc.Record(data=marc_plain.encode("utf-8"))
 
     def rid2bc(self, rid):
         url = self.url_rid2bc(rid, self.db)
