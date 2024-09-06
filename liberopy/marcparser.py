@@ -47,11 +47,13 @@ class MarcTitle:
         field = self.get_field(fname)
         if isinstance(field, list):
             for subfield in field:
-                if "indicator" in subfield and \
-                        "subfield" in subfield and \
-                            "value" in subfield:
+                if "sequence" in subfield and \
+                        "indicator" in subfield and \
+                            "subfield" in subfield and \
+                                "value" in subfield:
                     if find is None and fsub is None:
-                        return {"ind": subfield["indicator"],
+                        return {"seq": subfield["sequence"],
+                                "ind": subfield["indicator"],
                                 "sub": subfield["subfield"],
                                 "val": subfield["value"]}
                     ind = subfield["indicator"]
@@ -66,11 +68,13 @@ class MarcTitle:
         if isinstance(field, list):
             values = []
             for subfield in field:
-                if "indicator" in subfield and \
-                        "subfield" in subfield and \
-                            "value" in subfield:
+                if "sequence" in subfield and \
+                        "indicator" in subfield and \
+                            "subfield" in subfield and \
+                                "value" in subfield:
                     values.append(
-                        {"ind": subfield["indicator"],
+                        {"seq": subfield["sequence"],
+                         "ind": subfield["indicator"],
                          "sub": subfield["subfield"],
                          "val": subfield["value"]})
             if len(values) > 0:
