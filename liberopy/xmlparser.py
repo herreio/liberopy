@@ -227,9 +227,9 @@ class TitleMarc(ServiceResponse):
             if tag not in marc_data["_fields"]:
                 marc_data["_fields"][tag] = []
             tag_data = marc_data["_fields"][tag]
-            indicator = marc_elem.find(indicator_pattern).text[1:]
-            indicator1 = indicator[:1]
-            indicator2 = indicator[1:2]
+            indicator = marc_elem.find(indicator_pattern).text
+            indicator1 = indicator[1:2]
+            indicator2 = indicator[2:3]
             subfield = marc_elem.find(subfield_pattern).text
             tag_data.append({
                 "indicator": indicator,
