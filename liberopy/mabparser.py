@@ -633,7 +633,7 @@ class MabTitle:
           Indikator:
           b     = Universal Product Code (UPC)
         """
-        return self.get_value("553", "b")
+        return self.get_value("553", find="b")
 
     def get_statistics_code(self):
         """
