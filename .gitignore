@@ -5,6 +5,7 @@ dev/
 *_dev.*
 dev.*
 dev-*
+tests/*.json
 
 # Editor
 *.swp
