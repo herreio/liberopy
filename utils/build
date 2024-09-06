@@ -3,5 +3,5 @@ rm -rf build/
 rm -rf dist/
 rm -rf liberopy.egg-info/
 source env/bin/activate
-python setup.py sdist bdist_wheel 
+python -m build
 deactivate
