@@ -173,6 +173,11 @@ class LiberoClientCatalogTestMixin(LiberoClientTestCase):
                 pass
             else:
                 self.assertIsInstance(self.record_marcp, str)
+                self.record_marco = self.client.marcobject(rid)
+                if self.record_marco is None:
+                    pass
+                else:
+                    self.assertEqual(rid, self.record_marco.get("001").value())
 
     def helperMabBlock(self, rid):
         self.record_mab = self.client.mabblock(rid)
