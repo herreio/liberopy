@@ -124,11 +124,15 @@ class LiberoClientCatalogTestMixin(LiberoClientTestCase):
         self.record_title_mab = tit.get_mab_data_items_parser()
         self.record_title_mab_id = self.record_title_mab.get_id()
         self.assertIsInstance(self.record_title_mab_id, str)
+        self.record_title_mab_ppn = self.record_title_mab.get_ppn()
+        self.assertEqual(self.record_title_mab_ppn, self.record_title_mab_id)
 
     def helperTitleMarc(self, tit):
         self.record_title_marc = tit.get_marc_data_items_parser()
         self.record_title_marc_id = self.record_title_marc.get_id()
         self.assertIsInstance(self.record_title_marc_id, str)
+        self.record_title_marc_cn = self.record_title_marc.get_cn()
+        self.assertEqual(self.record_title_marc_cn, self.record_title_marc_id)
 
     def helperItem(self, bc):
         self.record_item = self.client.item(bc)
