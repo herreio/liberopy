@@ -82,3 +82,88 @@ class MarcTitle:
         field = self.get_value("001")
         if isinstance(field, dict) and "val" in field:
             return field["val"]
+
+    def get_date_entered(self):
+        """
+        00X       Control Fields-General Information
+
+        008       Fixed-Length Data Elements-General Information
+        /00-05    Date entered on file
+
+        Field has no indicators or subfield codes; the data elements are positionally defined...
+        """
+        field = self.get_value("008")
+        if isinstance(field, dict) and "val" in field:
+            field_val = field["val"]
+            if isinstance(field_val, str) and len(field_val) > 6:
+                return field_val[0:6]
+
+    def get_date_entered_date(self):
+        """
+        00X       Control Fields-General Information
+
+        008       Fixed-Length Data Elements-General Information
+        /00-05    Date entered on file
+
+        Field has no indicators or subfield codes; the data elements are positionally defined...
+        """
+        date_entered = self.get_date_entered()
+        if isinstance(date_entered, str) and len(date_entered) == 6:
+            try:
+                return datetime.datetime.strptime(date_entered, "%y%m%d").date()
+            except ValueError:
+                pass
+
+    def get_date_entered_iso(self):
+        """
+        00X       Control Fields-General Information
+
+        008       Fixed-Length Data Elements-General Information
+        /00-05    Date entered on file
+
+        Field has no indicators or subfield codes; the data elements are positionally defined...
+        """
+        date_entered = self.get_date_entered_date()
+        if date_entered is not None:
+            return date_entered.isoformat()
+
+    def get_latest_trans(self):
+        """
+        00X       Control Fields-General Information
+
+        005       Date and Time of Latest Transaction
+
+        This field has no indicators or subfield codes.
+        """
+        field = self.get_value("005")
+        if isinstance(field, dict) and "val" in field:
+            field_val = field["val"]
+            if isinstance(field_val, str):
+                return field_val
+
+    def get_latest_trans_datetime(self):
+        """
+        00X       Control Fields-General Information
+
+        005       Date and Time of Latest Transaction
+
+        This field has no indicators or subfield codes.
+        """
+        latest_trans = self.get_latest_trans()
+        if isinstance(latest_trans, str):
+            try:
+                return datetime.datetime.strptime(latest_trans, "%Y%m%d%H%M%S.0")
+            except ValueError:
+                pass
+
+    def get_latest_trans_iso(self):
+        """
+        00X       Control Fields-General Information
+
+        005       Date and Time of Latest Transaction
+
+        This field has no indicators or subfield codes.
+        """
+        latest_trans = self.get_latest_trans_datetime()
+        if latest_trans is not None:
+            return latest_trans.isoformat()
