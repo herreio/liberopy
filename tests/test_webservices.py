@@ -85,6 +85,8 @@ class LiberoClientCatalogTestMixin(LiberoClientTestCase):
         self.record_title = None
         self.record_title_mab = None
         self.record_title_mab_id = None
+        self.record_title_marc = None
+        self.record_title_marc_id = None
         self.record_barcodes = None
         self.record_barcode = None
         self.record_item = None
