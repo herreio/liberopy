@@ -43,25 +43,23 @@ class MarcTitle:
         if isinstance(fields, dict) and name in fields:
             return fields[name]
 
-    def get_value(self, fname, find=None, fsub=None):
+    def get_value(self, fname, fsub=None, find1=None, find2=None):
         field = self.get_field(fname)
         if isinstance(field, list):
             for subfield in field:
-                if "sequence" in subfield and \
-                        "indicator" in subfield and \
-                            "subfield" in subfield and \
-                                "value" in subfield:
-                    if find is None and fsub is None:
-                        return {"seq": subfield["sequence"],
-                                "ind": subfield["indicator"],
-                                "sub": subfield["subfield"],
-                                "val": subfield["value"]}
-                    ind = subfield["indicator"]
-                    sub = subfield["subfield"]
-                    if (find is None and sub == fsub) or \
-                            (fsub is None and ind == find) or \
-                                (ind == find and sub == fsub):
+                if "value" in subfield:
+                    if fname.startswith("00"):
                         return subfield["value"]
+                    if "indicator1" in subfield and \
+                            "indicator2" in subfield and \
+                                "subfield" in subfield:
+                        ind1 = subfield["indicator1"]
+                        ind2 = subfield["indicator2"]
+                        sub = subfield["subfield"]
+                        if (find1 is None or find1 == ind1) and \
+                                (find2 is None or find2 == ind2) and \
+                                    (fsub is None or fsub == sub):
+                            return subfield["value"]
 
     def get_values(self, fname, reduce=True):
         field = self.get_field(fname)
@@ -69,12 +67,14 @@ class MarcTitle:
             values = []
             for subfield in field:
                 if "sequence" in subfield and \
-                        "indicator" in subfield and \
-                            "subfield" in subfield and \
-                                "value" in subfield:
+                        "indicator1" in subfield and \
+                            "indicator2" in subfield and \
+                                "subfield" in subfield and \
+                                    "value" in subfield:
                     values.append(
                         {"seq": subfield["sequence"],
-                         "ind": subfield["indicator"],
+                         "ind1": subfield["indicator1"],
+                         "ind2": subfield["indicator2"],
                          "sub": subfield["subfield"],
                          "val": subfield["value"]})
             if len(values) > 0:
@@ -90,9 +90,7 @@ class MarcTitle:
 
         No indicators and subfield codes.
         """
-        field = self.get_value("001")
-        if isinstance(field, dict) and "val" in field:
-            return field["val"]
+        return self.get_value("001")
 
     def get_date_entered(self):
         """
@@ -104,10 +102,8 @@ class MarcTitle:
         Field has no indicators or subfield codes; the data elements are positionally defined...
         """
         field = self.get_value("008")
-        if isinstance(field, dict) and "val" in field:
-            field_val = field["val"]
-            if isinstance(field_val, str):
-                return field_val[:6]
+        if isinstance(field, str):
+            return field[:6]
 
     def get_date_entered_date(self):
         """
@@ -147,10 +143,8 @@ class MarcTitle:
         This field has no indicators or subfield codes.
         """
         field = self.get_value("005")
-        if isinstance(field, dict) and "val" in field:
-            field_val = field["val"]
-            if isinstance(field_val, str):
-                return field_val
+        if isinstance(field, str):
+            return field
 
     def get_latest_trans_datetime(self):
         """
