@@ -49,7 +49,10 @@ except KeyError:
 
 print(f"The database {db_chosen} was chosen for the tests ----------------------------\n")
 
-search_query = "har"
+try:
+    search_query = os.environ["LIBEROPY_TEST_QUERY"]
+except KeyError:
+    search_query = "har"
 
 
 class LiberoClientTestCase(unittest.TestCase):

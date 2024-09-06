@@ -132,8 +132,8 @@ cf. https://duckduckgo.com/?q=libero+webopac / https://www.google.com/search?q=l
 python -m unittest -v
 ```
 
-You can also choose a specific instance via the envrionment variable `LIBEROPY_TEST_DB`.
+You can also choose a specific instance and/or set the search query via envrionment variables.
 
 ```sh
-LIBEROPY_TEST_DB="HGB" python -m unittest -v
+LIBEROPY_TEST_DB="HGB" LIBEROPY_TEST_QUERY="digitalkunst" python -m unittest -v
 ```

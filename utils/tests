@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 source env/bin/activate
-LIBEROPY_TEST_DB="HGB" python -m unittest -v
+LIBEROPY_TEST_DB="HGB" LIBEROPY_TEST_QUERY="digitalkunst" python -m unittest -v
 deactivate
