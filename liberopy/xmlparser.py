@@ -7,7 +7,7 @@ import base64
 import dateutil.parser
 from lxml import etree
 
-from . import mabparser
+from . import mabparser, marcparser
 
 
 class ServiceResponse:
@@ -183,6 +183,16 @@ class Title(ResultItem):
     def get_elem_marc_data_items(self):
         return self.elem("MarcDataItems")
 
+    def get_marc_data_items_xml_parser(self):
+        marc_data_items_elems = self.get_elem_marc_data_items()
+        if marc_data_items_elems is not None:
+            return TitleMarc(etree.tostring(marc_data_items_elems).decode())
+
+    def get_marc_data_items_parser(self):
+        marc_data_items_xml = self.get_marc_data_items_xml_parser()
+        if marc_data_items_xml is not None:
+            return marc_data_items_xml.get_parser()
+
     def get_mab_data_items_xml_parser(self):
         marc_data_items_elems = self.get_elem_marc_data_items()
         if marc_data_items_elems is not None:
@@ -192,6 +202,45 @@ class Title(ResultItem):
         mab_data_items_xml = self.get_mab_data_items_xml_parser()
         if mab_data_items_xml is not None:
             return mab_data_items_xml.get_parser()
+
+
+class TitleMarc(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="MarcDataItems")
+
+    def to_dict(self):
+        marc_data = {
+            "_id": None,
+            "_fields": {}
+        }
+        tag_pattern = self.ns("tag")
+        indicator_pattern = self.ns("indicator")
+        subfield_pattern = self.ns("subfield")
+        marc_data_b64_pattern = self.ns("tagData")
+        marc_elems = self.elems("MarcDataItem")
+        for marc_elem in marc_elems:
+            tag = marc_elem.find(tag_pattern).text[1:]
+            marc_data_b64 = marc_elem.find(marc_data_b64_pattern)
+            if marc_data_b64 is not None:
+                marc_data_plain = base64.b64decode(marc_data_b64.text).decode("utf-8")
+            if tag not in marc_data["_fields"]:
+                marc_data["_fields"][tag] = []
+            tag_data = marc_data["_fields"][tag]
+            indicator = marc_elem.find(indicator_pattern).text
+            subfield = marc_elem.find(subfield_pattern).text
+            tag_data.append({
+                "indicator": indicator,
+                "subfield": subfield,
+                "value": marc_data_plain
+            })
+            marc_data["_fields"][tag] = tag_data
+            if tag == "001":
+                marc_data["_id"] = marc_data_plain
+        return marc_data
+
+    def get_parser(self):
+        return marcparser.MarcTitle(self.to_dict())
 
 
 class TitleMab(ServiceResponse):
