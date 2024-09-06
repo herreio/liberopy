@@ -43,17 +43,22 @@ class MarcTitle:
         if isinstance(fields, dict) and name in fields:
             return fields[name]
 
-    def get_value(self, fname, find=None):
+    def get_value(self, fname, find=None, fsub=None):
         field = self.get_field(fname)
         if isinstance(field, list):
             for subfield in field:
                 if "indicator" in subfield and \
-                        "value" in subfield:
-                    if find is None:
+                        "subfield" in subfield and \
+                            "value" in subfield:
+                    if find is None and fsub is None:
                         return {"ind": subfield["indicator"],
+                                "sub": subfield["subfield"],
                                 "val": subfield["value"]}
                     ind = subfield["indicator"]
-                    if ind == find:
+                    sub = subfield["subfield"]
+                    if (find is None and sub == fsub) or \
+                            (fsub is None and ind == find) or \
+                                (ind == find and sub == fsub):
                         return subfield["value"]
 
     def get_values(self, fname, reduce=True):
@@ -62,9 +67,11 @@ class MarcTitle:
             values = []
             for subfield in field:
                 if "indicator" in subfield and \
-                        "value" in subfield:
+                        "subfield" in subfield and \
+                            "value" in subfield:
                     values.append(
                         {"ind": subfield["indicator"],
+                         "sub": subfield["subfield"],
                          "val": subfield["value"]})
             if len(values) > 0:
                 if reduce and len(values) == 1:
