@@ -97,6 +97,7 @@ class LiberoClientCatalogTestMixin(LiberoClientTestCase):
         self.record_barcodes_via_rid = None
         self.record_marc = None
         self.record_marcp = None
+        self.record_marco = None
         self.record_mab = None
         self.record_mabp = None
 
