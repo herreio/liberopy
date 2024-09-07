@@ -235,7 +235,6 @@ class TitleMarc(ServiceResponse):
             subfield = marc_elem.find(subfield_pattern).text
             tag_data.append({
                 "sequence": int(sequence),
-                "indicator": indicator,
                 "indicator1": indicator1 if not tag.startswith("00") else None,
                 "indicator2": indicator2 if not tag.startswith("00") else None,
                 "subfield": subfield.strip() or None,
