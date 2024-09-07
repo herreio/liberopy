@@ -1,3 +1,11 @@
+2024-09-07
+
+- parse MarcBlock via pymarc
+- add WebServices method marcobject
+- update OnlineCatalogue method marc_plain
+- update MabTitle and MarcTitle methods
+- update tests for webservices
+
 2024-09-06
 
 - add tests for webservices
