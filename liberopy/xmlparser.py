@@ -1040,3 +1040,19 @@ class Branches(ServiceResponse):
 
     def get_opac_selections(self):
         return self.texts(["Branches", "OPACSelection"])
+
+
+class MarcXml(ServiceResponse):
+
+    def __init__(self, xmlstr):
+        super().__init__(xmlstr, tagname="record")
+
+    @staticmethod
+    def ns(tagname):
+        return "{{http://www.loc.gov/MARC21/slim}}{0}".format(tagname)
+
+    def get_tag_value(self, tag):
+        return self.text(f"controlfield[@tag='{tag}']")
+
+    def get_tag_values(self, tag):
+        return self.texts(f"controlfield[@tag='{tag}']")

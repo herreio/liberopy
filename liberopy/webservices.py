@@ -18,6 +18,7 @@ class WebServices:
         self.base = "{0}/LiberoWebServices".format(self.domain)
         self.base_ill = "{0}/InterLibrary.service.web".format(self.domain)
         self.base_ocsl = "{0}/services.catalogue".format(self.domain)
+        self.base_mrcx = "{0}/Libero".format(self.domain)
         self.db = db
         self.token = None
         self.logger = None
@@ -27,6 +28,7 @@ class WebServices:
         self.CatalogueSearcher = CatalogueSearcher(self.base, self.db, loglevel=self.logger.level)
         self.OnlineCatalogue = OnlineCatalogue(self.base_ocsl, self.db, loglevel=self.logger.level)
         self.OnlineILLService = OnlineILLService(self.base_ill, self.db, loglevel=self.logger.level)
+        self.DispMarcXml = DispMarcXml(self.base_mrcx, self.db, loglevel=self.logger.level)
 
     def _logger(self, level):
         self.logger = logging.getLogger("liberopy.WebServices")
@@ -93,6 +95,9 @@ class WebServices:
 
     def marcobject(self, rid):
         return self.OnlineCatalogue.marc_object(rid)
+
+    def marcxml(self, rsn):
+        return self.DispMarcXml.marc_xml(rsn)
 
     def itemdetails(self, barcode):
         if self.token is not None:
@@ -568,3 +573,19 @@ class OnlineILLService(ServicePackage):
 
     def add_member_code_to_url(self, url, mc):
         return self.add_param(url, "MemberCode", mc)
+
+
+class DispMarcXml(ServicePackage):
+
+    def __init__(self, base, db, loglevel=logging.DEBUG):
+        super().__init__(base, "dispmarcxml", loglevel=loglevel)
+        self.db = db
+
+    def marc_xml(self, rsn):
+        url = self.url_marc_xml(rsn)
+        self.logger.info("Fetch MARC XML for title with RSN {0}.".format(rsn))
+        return self.soap_request(url, post=xmlparser.MarcXml)
+
+    def url_marc_xml(self, rsn, db=None):
+        url = self.set_param(self.path, "DB", db)
+        return self.add_param(url, "RSN", rsn)
