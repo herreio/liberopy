@@ -1,0 +1,42 @@
+# Set up repository for development, run tests and build package.
+
+name: Development
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python3 -m venv env
+        source env/bin/activate
+        pip install -U pip setuptools wheel
+        pip install -r requirements.txt
+        deactivate
+    - name: Unit tests
+      run: |
+        source env/bin/activate
+        python -m unittest -v
+        deactivate
+    - name: Build package
+      run: |
+        source env/bin/activate
+        python -m build
+        deactivate
