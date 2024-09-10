@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+source env/bin/activate
+flake8 liberopy --max-complexity=10 --max-line-length=127 --statistics
+deactivate
