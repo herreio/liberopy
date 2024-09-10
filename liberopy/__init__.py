@@ -9,3 +9,5 @@ __license__ = "GPLv3"
 
 from . import xmlparser
 from .webservices import WebServices
+
+__all__ = ["xmlparser", "WebServices"]

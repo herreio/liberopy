@@ -52,13 +52,13 @@ class MarcTitle:
                         return subfield["value"]
                     if "indicator1" in subfield and \
                             "indicator2" in subfield and \
-                                "subfield" in subfield:
+                            "subfield" in subfield:
                         ind1 = subfield["indicator1"]
                         ind2 = subfield["indicator2"]
                         sub = subfield["subfield"]
                         if (find1 is None or find1 == ind1) and \
                                 (find2 is None or find2 == ind2) and \
-                                    (fsub is None or fsub == sub):
+                                (fsub is None or fsub == sub):
                             return subfield["value"]
 
     def get_values(self, fname, reduce=True):
@@ -68,9 +68,9 @@ class MarcTitle:
             for subfield in field:
                 if "sequence" in subfield and \
                         "indicator1" in subfield and \
-                            "indicator2" in subfield and \
-                                "subfield" in subfield and \
-                                    "value" in subfield:
+                        "indicator2" in subfield and \
+                        "subfield" in subfield and \
+                        "value" in subfield:
                     values.append(
                         {"seq": subfield["sequence"],
                          "ind1": subfield["indicator1"],

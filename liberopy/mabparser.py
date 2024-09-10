@@ -70,7 +70,7 @@ class MabTitle:
                         seq = subfield["sequence"]
                         if (find is None and seq == fseq) or \
                                 (fseq is None and ind == find) or \
-                                    (ind == find and seq == fseq):
+                                (ind == find and seq == fseq):
                             return subfield["value"]
 
     def get_values(self, fname, reduce=True):
@@ -80,7 +80,7 @@ class MabTitle:
             for subfield in field:
                 if "indicator" in subfield and \
                         "sequence" in subfield and \
-                            "value" in subfield:
+                        "value" in subfield:
                     values.append(
                         {"ind": subfield["indicator"],
                          "seq": subfield["sequence"],

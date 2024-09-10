@@ -79,9 +79,9 @@ class ServiceResponse:
         return "/".join(self.ns(tagname) for tagname in tagnames)
 
     def ns_prep(self, tagname):
-        if type(tagname) == str:
+        if isinstance(tagname, str):
             return self.ns(tagname)
-        elif type(tagname) == list:
+        elif isinstance(tagname, list):
             return self.ns_path(tagname)
 
     def elem(self, tag):
