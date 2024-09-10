@@ -30,6 +30,12 @@ jobs:
         pip install -U pip setuptools wheel
         pip install -r requirements.txt
         deactivate
+    - name: Lint with flake8
+      run: |
+        source env/bin/activate
+        flake8 liberopy --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 liberopy --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        deactivate
     - name: Unit tests
       run: |
         source env/bin/activate
