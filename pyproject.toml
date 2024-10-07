@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "liberopy"
+authors = [
+    {name = "Donatus Herre", email = "donatus.herre@slub-dresden.de"},
+]
+description = "LIBERO Web Services SOAP API Client"
+readme = "README.md"
+license.file = "LICENSE"
+version = "2024.9.7"
+dependencies = [
+  "requests",
+  "lxml",
+  "python-dateutil",
+  "pymarc",
+]
+
+[project.urls]
+Homepage = "https://github.com/herreio/liberopy"
+Repository = "https://github.com/herreio/liberopy.git"
+Issues = "https://github.com/herreio/liberopy/issues"
+Changelog = "https://github.com/herreio/liberopy/blob/main/CHANGELOG"
+
+[tool.setuptools]
+packages = ["liberopy"]
