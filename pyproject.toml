@@ -10,7 +10,7 @@ authors = [
 description = "LIBERO Web Services SOAP API Client"
 readme = "README.md"
 license.file = "LICENSE"
-version = "2024.9.7"
+version = "2024.10.7"
 dependencies = [
   "requests",
   "lxml",

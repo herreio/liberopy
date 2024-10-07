@@ -1,3 +1,7 @@
+2024-10-07
+
+- remove setup.py and use pyproject.toml
+
 2024-09-07
 
 - parse MarcBlock via pymarc
